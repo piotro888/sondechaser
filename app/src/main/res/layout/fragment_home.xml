@@ -79,6 +79,17 @@
             app:layout_constraintBottom_toTopOf="@+id/posbtn"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#7AFFFFFF"
+            android:text="Map ©OpenStreetMap contributors\nSondeChaser ©Piotr Węgrzyn\nData:\n©Michał Lewiński (radiosondy.info)\n©Rossen Georgiev (sondehub.org)\n©Open-Meteo.com"
+            android:textAlignment="center"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
