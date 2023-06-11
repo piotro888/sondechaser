@@ -83,7 +83,7 @@ public class LocalServerCollector implements Runnable {
 
                 sonde.alt = (int)Math.round(json.getDouble("alt"));
 
-                sonde.time = json.getLong("time")*1000 + 2*60*60*1000;
+                sonde.time = json.getLong("time")*1000;
 
                 sonde.vspeed = (float)json.getDouble("vs");
 
@@ -93,6 +93,11 @@ public class LocalServerCollector implements Runnable {
                 System.out.println(sonde.alt);
                 if (lastSonde != null && sonde.time == lastSonde.time)
                     return;
+
+                if(sonde.time > new Date().getTime() && sonde.time - new Date().getTime() < 600_000) {
+                    // Sonde clocks tend to shift in time
+                    sonde.time = new Date().getTime();
+                }
 
                 if (lastSonde != null) {
                     float timedev = (sonde.time - lastSonde.time) / 1000.f;
