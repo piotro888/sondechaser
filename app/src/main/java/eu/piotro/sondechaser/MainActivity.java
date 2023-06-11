@@ -22,12 +22,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.osmdroid.config.Configuration;
 
+import eu.piotro.sondechaser.data.DataCollector;
 import eu.piotro.sondechaser.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+
+    public DataCollector dataCollector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
                         LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
+
+        dataCollector = new DataCollector(this);
+        Thread dataCollectorThread = new Thread(dataCollector);
+        dataCollectorThread.start();
     }
 
     @Override
@@ -77,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        dataCollector.onDestroy();
+        super.onDestroy();
     }
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

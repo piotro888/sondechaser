@@ -17,8 +17,8 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
+import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
-import eu.piotro.sondechaser.ui.home.map.MapUpdater;
 
 public class HomeFragment extends Fragment {
     public MapView mapView;
@@ -26,33 +26,14 @@ public class HomeFragment extends Fragment {
 
     private MapUpdater updater;
 
-    // HACK: Persist this Fragemnt and map markers and exceptions...
     private View view = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if (view == null) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-//        }
         return view;
     }
-//    public boolean hasInitializedRootView = false;
-//    private View rootView = null;
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container , Bundle savedInstanceState) {
-//        if (rootView == null) {
-//            rootView = inflater.inflate(R.layout.fragment_home, container, false);
-//        } else {
-//            // Do not inflate the layout again.
-//            // The returned View of onCreateView will be added into the fragment.
-//            // However it is not allowed to be added twice even if the parent is same.
-//            // So we must remove rootView from the existing parent view group
-//            // (it will be added back).
-//            //((ViewGroup)rootView.getParent()).removeView(rootView);
-//        }
-//        return rootView;
-//    }
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
@@ -73,38 +54,32 @@ public class HomeFragment extends Fragment {
                 () -> mapView.zoomToBoundingBox(new BoundingBox(51, 17, 50, 16), false)
         );
 
+        updater = new MapUpdater(this);
+
         v.findViewById(R.id.northbtn).setOnClickListener((_v) -> mapView.setMapOrientation(0));
         v.findViewById(R.id.locbtn).setOnClickListener((_v) -> {
             mapView.getController().animateTo(locationOverlay.getMyLocation());
         });
 
-//        if(!hasInitializedRootView) {
-//            hasInitializedRootView = true;
-
-            updater = new MapUpdater(this);
-            Thread mut = new Thread(updater);
-            mut.start();
-
-            v.findViewById(R.id.posbtn).setOnClickListener((_v) -> {
-                mapView.getController().animateTo(updater.last_pos);
-            });
-            v.findViewById(R.id.predbtn).setOnClickListener((_v) -> {
-                mapView.getController().animateTo(updater.last_pred);
-            });
-        //}
+        v.findViewById(R.id.posbtn).setOnClickListener((_v) -> {
+            mapView.getController().animateTo(updater.last_pos);
+        });
+        v.findViewById(R.id.predbtn).setOnClickListener((_v) -> {
+            mapView.getController().animateTo(updater.last_pred);
+        });
     }
 
     @Override
     public void onPause() {
+        ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(null);
         mapView.onPause();
-        updater.onPause();
         super.onPause();
     }
 
     @Override
     public void onResume() {
         mapView.onResume();
-        updater.onResume();
+        ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(updater);
         super.onResume();
     }
 }
