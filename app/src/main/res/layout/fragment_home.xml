@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </org.osmdroid.views.MapView>
+
+        <ImageButton
+            android:id="@+id/locbtn"
+            style="@android:style/Widget.DeviceDefault.ImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="10dp"
+            android:adjustViewBounds="true"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/location"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/northbtn"
+            style="@android:style/Widget.DeviceDefault.ImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="10dp"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/north_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintStart_toEndOf="@+id/locbtn" />
+
+        <ImageButton
+            android:id="@+id/posbtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:cropToPadding="false"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/distance"
+            app:layout_constraintBottom_toTopOf="@+id/locbtn"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/predbtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:cropToPadding="false"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/distance"
+            android:tint="#009688"
+            app:layout_constraintBottom_toTopOf="@+id/posbtn"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/textsid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="ME2122B71 	"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textfreq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="402.801 MHz"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/textsid"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textalt"
+            android:layout_width="106dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:text="28655 m"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textsid" />
+
+        <TextView
+            android:id="@+id/textaog"
+            android:layout_width="85dp"
+            android:layout_height="27dp"
+            android:layout_marginStart="40dp"
+            android:text="28655 m"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textalt"
+            app:layout_constraintStart_toEndOf="@+id/textvspeed"
+            app:layout_constraintTop_toTopOf="@+id/textalt" />
+
+        <TextView
+            android:id="@+id/textvspeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-17.48 m/s"
+            app:layout_constraintBottom_toBottomOf="@+id/textalt"
+            app:layout_constraintStart_toEndOf="@+id/imagevsarrow"
+            app:layout_constraintTop_toTopOf="@+id/textalt"
+            app:layout_constraintVertical_bias="0.363" />
+
+        <TextView
+            android:id="@+id/textposdist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="20km"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+        <TextView
+            android:id="@+id/textposhdg"
+            android:layout_width="30dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="10dp"
+            android:text="150()"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textposdist"
+            app:layout_constraintStart_toEndOf="@+id/textposdist"
+            app:layout_constraintTop_toTopOf="@+id/textposdist" />
+
+        <TextView
+            android:id="@+id/textpredhdg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="150()"
+            app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
+            app:layout_constraintStart_toEndOf="@+id/textpreddist"
+            app:layout_constraintTop_toTopOf="@+id/textpreddist" />
+
+        <TextView
+            android:id="@+id/textpredtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:03:51"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textpredhdg"
+            app:layout_constraintTop_toTopOf="@+id/textpreddist" />
+
+        <TextView
+            android:id="@+id/textpostime"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginEnd="20dp"
+            android:text="02:03:51"
+            app:layout_constraintBottom_toBottomOf="@+id/textposdist"
+            app:layout_constraintEnd_toStartOf="@+id/imageView9"
+            app:layout_constraintTop_toTopOf="@+id/textposdist" />
+
+        <TextView
+            android:id="@+id/textpreddist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="16dp"
+            android:text="21 km"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="20dp"
+            android:layout_height="27dp"
+            android:src="@drawable/mountains"
+            app:layout_constraintBottom_toBottomOf="@+id/textaog"
+            app:layout_constraintEnd_toStartOf="@+id/textaog"
+            app:layout_constraintTop_toTopOf="@+id/textaog" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/height"
+            app:layout_constraintBottom_toBottomOf="@+id/textalt"
+            app:layout_constraintEnd_toStartOf="@+id/textalt"
+            app:layout_constraintTop_toTopOf="@+id/textalt" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:text="Position "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textalt" />
+
+        <TextView
+            android:id="@+id/textpossrc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(RADIOSONDY)"
+            app:layout_constraintBottom_toBottomOf="@+id/textView17"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="5dp"
+            android:text="Prediction"
+            app:layout_constraintBottom_toTopOf="@+id/textpreddist"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textpredsrc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(SONDEHUB)"
+            app:layout_constraintBottom_toBottomOf="@+id/textView18"
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="@+id/textView18" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="23dp"
+            android:layout_height="30dp"
+            android:src="@drawable/distance"
+            app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
+            app:layout_constraintEnd_toStartOf="@+id/textpreddist"
+            app:layout_constraintTop_toTopOf="@+id/textpreddist" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@drawable/distance"
+            app:layout_constraintBottom_toBottomOf="@+id/textposdist"
+            app:layout_constraintStart_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/textposdist"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/stopwatch"
+            app:layout_constraintBottom_toBottomOf="@+id/textpredtime"
+            app:layout_constraintEnd_toStartOf="@+id/textpredtime"
+            app:layout_constraintTop_toTopOf="@+id/textpredtime"
+            app:layout_constraintVertical_bias="0.25" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="15dp"
+            android:layout_height="19dp"
+            android:src="@drawable/stopwatch"
+            app:layout_constraintBottom_toBottomOf="@+id/textpostime"
+            app:layout_constraintEnd_toStartOf="@+id/textpostime"
+            app:layout_constraintTop_toTopOf="@+id/textpostime" />
+
+        <TextView
+            android:id="@+id/textposage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="2s"
+            app:layout_constraintBottom_toBottomOf="@+id/textposdist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textposdist" />
+
+        <TextView
+            android:id="@+id/textpredage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="10s"
+            app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textpreddist" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@drawable/hourglass"
+            app:layout_constraintBottom_toBottomOf="@+id/textpredage"
+            app:layout_constraintEnd_toStartOf="@+id/textpredage"
+            app:layout_constraintTop_toTopOf="@+id/textpredage" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="16dp"
+            android:layout_height="18dp"
+            android:src="@drawable/hourglass"
+            app:layout_constraintBottom_toBottomOf="@+id/textposage"
+            app:layout_constraintEnd_toStartOf="@+id/textposage"
+            app:layout_constraintTop_toTopOf="@+id/textposage" />
+
+        <TextView
+            android:id="@+id/textstats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="S"
+            android:textColor="#E91E63"
+            app:layout_constraintBottom_toBottomOf="@+id/textfreq"
+            app:layout_constraintEnd_toStartOf="@+id/textstatr" />
+
+        <TextView
+            android:id="@+id/textstatr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="R"
+            android:textColor="#E91E63"
+            app:layout_constraintBottom_toBottomOf="@+id/textstats"
+            app:layout_constraintEnd_toStartOf="@+id/textstatl"
+            app:layout_constraintTop_toTopOf="@+id/textstats" />
+
+        <TextView
+            android:id="@+id/textstatl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="L"
+            android:textColor="#E91E63"
+            app:layout_constraintBottom_toBottomOf="@+id/textstatr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textstatr" />
+
+        <ImageView
+            android:id="@+id/imagevsarrow"
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:src="@drawable/arrow_out"
+            app:layout_constraintBottom_toBottomOf="@+id/textvspeed"
+            app:layout_constraintStart_toEndOf="@+id/textalt"
+            app:layout_constraintTop_toTopOf="@+id/textvspeed"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
