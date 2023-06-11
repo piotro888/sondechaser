@@ -23,8 +23,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class SondeHubCollector implements Runnable {
     private static final String BASE_URL = "https://api.v2.sondehub.org/";
-    //private Sonde lastSonde;
-    //private ArrayList<GeoPoint> track;
+    private Sonde lastSonde;
+    private ArrayList<GeoPoint> track;
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
     //long start_time = 0;
@@ -41,6 +41,8 @@ public class SondeHubCollector implements Runnable {
     public void run() {
         prediction = new ArrayList<>();
         pred_point = null;
+        lastSonde = null;
+        track = new ArrayList<>();
 
         try {
             while (!Thread.interrupted()) {
@@ -88,13 +90,13 @@ public class SondeHubCollector implements Runnable {
 
                 sonde.alt = (int)Math.round(curr.getDouble("altitude"));
 
+                sonde.vspeed = curr.getInt("descending") == 0 ? (float)curr.getDouble("ascent_rate") : (float)-curr.getDouble("descent_rate");
+
                 String time_str = curr.getString("time");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                 sonde.time = sdf.parse(time_str.substring(0, time_str.length() - 1)).getTime();
                 System.out.println("Sondehub time" + sonde.time);
-
-                // TODO: use it?
 
                 String path = curr.getString("data");
                 JSONArray pathobj = new JSONArray(path);
@@ -114,8 +116,12 @@ public class SondeHubCollector implements Runnable {
                 point.time = last.getLong("time")*1000;
 
                 synchronized (dataLock) {
+                    lastSonde = sonde;
                     pred_point = point;
                     prediction = gps;
+                    if (track.size() > 0 && (track.get(track.size()-1).getLatitude() != sonde.lat ||
+                                             track.get(track.size()-1).getLongitude() != sonde.lon))
+                        track.add(new GeoPoint(sonde.lat, sonde.lon));
                 }
                 last_decoded = new Date().getTime();
             } catch (Exception e) {
@@ -132,12 +138,23 @@ public class SondeHubCollector implements Runnable {
         } catch (Exception ignored) {}
     }
 
-
     public ArrayList<GeoPoint> getPrediction() {
         synchronized (dataLock) {return prediction;}
     }
 
     public Point getPredictionPoint() {
         synchronized (dataLock) {return pred_point;}
+    }
+
+    public Sonde getLastSonde() {
+        synchronized (dataLock) {
+            return lastSonde;
+        }
+    }
+
+    public ArrayList<GeoPoint> getSondeTrack() {
+        synchronized (dataLock) {
+            return track;
+        }
     }
 }

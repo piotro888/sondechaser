@@ -49,11 +49,14 @@ public class MapUpdater implements Runnable {
     private Polyline rsPredLine;
 
     private Marker shPredMarker;
+    private Marker shLastMarker;
+    private Polyline shPathLine;
     private Polyline shPredLine;
 
     private Marker localPredMarker;
     private Marker localLastMarker;
     private Polyline localPathLine;
+    private String sondeMarkerSource = "";
 
     private long pred_changed_time;
     private GeoPoint prev_pred_point;
@@ -104,6 +107,16 @@ public class MapUpdater implements Runnable {
         shtgb = Bitmap.createScaledBitmap(shtgb, shtgb.getWidth()/4, shtgb.getHeight()/4, false);
         shPredMarker.setIcon(new BitmapDrawable(homeFragment.getResources(), shtgb));
         homeFragment.mapView.getOverlays().add(shPredMarker);
+
+        shLastMarker = new Marker(homeFragment.mapView);
+        shLastMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        shLastMarker.setIcon(homeFragment.getResources().getDrawable(R.drawable.loclastsh));
+        homeFragment.mapView.getOverlays().add(shLastMarker);
+
+        shPathLine = new Polyline(homeFragment.mapView);
+        shPathLine.setEnabled(true);
+        shPathLine.setColor(Color.MAGENTA);
+        homeFragment.mapView.getOverlays().add(shPathLine);
 
         shPredLine = new Polyline(homeFragment.mapView);
         shPredLine.setEnabled(true);
@@ -169,10 +182,13 @@ public class MapUpdater implements Runnable {
         // Sonde marker and Position data
         Sonde rs_last_sonde = rs_col.getLastSonde();
         Sonde lc_last_sonde = lc_col.getLastSonde();
+        Sonde sh_last_sonde = sh_col.getLastSonde();;
         if (lc_last_sonde != null && (rs_last_sonde == null || rs_last_sonde.time <= lc_last_sonde.time))
             updatePosition(lc_last_sonde, "LOCAL");
-        else
+        else if (rs_last_sonde != null && (sh_last_sonde == null || sh_last_sonde.time <= rs_last_sonde.time))
             updatePosition(rs_last_sonde, "RADIOSONDY");
+        else
+            updatePosition(sh_last_sonde, "SONDEHUB");
 
         // Draw predictions & paths
         updateTraces();
@@ -210,6 +226,20 @@ public class MapUpdater implements Runnable {
             return;
         }
 
+        boolean vs_ok = !Objects.equals(sondeMarkerSource, "SONDEHUB");
+        if(rs_col.getLastSonde() != null) {
+            if (sonde.sid == null)
+                sonde.sid = rs_col.getLastSonde().sid;
+            if (sonde.freq == null)
+                sonde.freq = rs_col.getLastSonde().freq;
+            if (Objects.equals(sondeMarkerSource, "SONDEHUB") &&
+                    new Date().getTime() - rs_col.getLastSonde().time < 120_000 &&
+                    sonde.vspeed * rs_col.getLastSonde().vspeed >= 0) {
+                sonde.vspeed = rs_col.getLastSonde().vspeed;
+                vs_ok = true;
+            }
+        }
+
         last_pos = new GeoPoint(sonde.lat, sonde.lon);
         elapi.lat = sonde.lat; elapi.lon = sonde.lon;
         try {
@@ -231,16 +261,20 @@ public class MapUpdater implements Runnable {
             String final_posdist_km = posdist_km;
             String final_bearing_str = bearing_str;
 
+            sondeMarkerSource = source;
+
             if(paused)
                 return;
             try {
+                boolean finalVs_ok = vs_ok;
                 homeFragment.requireActivity().runOnUiThread(() -> {
                     try {
                     ((TextView) homeFragment.requireView().findViewById(R.id.textsid)).setText(sonde.sid == null ? "N/A" : sonde.sid);
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textfreq)).setText(sonde.sid == null ? "N/A" : sonde.freq);
+                    ((TextView) homeFragment.requireView().findViewById(R.id.textfreq)).setText(sonde.freq == null ? "N/A" : sonde.freq);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textalt)).setText(sonde.alt + " m");
                     ((TextView) homeFragment.requireView().findViewById(R.id.textaog)).setText(sonde.alt - elapi.alt + " m");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textvspeed)).setText(sonde.vspeed + " m/s");
+                    ((TextView) homeFragment.requireView().findViewById(R.id.textvspeed)).setText(finalVs_ok ? sonde.vspeed + " m/s" :
+                                    ((sonde.vspeed >= 0 ? "+?" : "-?") + " (r: "+Math.abs(sonde.vspeed)+")"));
                     homeFragment.requireView().findViewById(R.id.imagevsarrow).setRotation(180 * ((sonde.vspeed < 0) ? 1 : 0));
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setText(data_age + "s");
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setTextColor(data_age > 120 ? Color.RED : Color.BLACK);
@@ -248,7 +282,9 @@ public class MapUpdater implements Runnable {
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposhdg)).setText(final_bearing_str);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textpossrc)).setText("(" + source + ")");
 
-                    sondeMarker.setVisible(true);
+                    boolean hide = (Objects.equals(sondeMarkerSource, "LOCAL") && (data_age > 20))  ||
+                            ((Objects.equals(sondeMarkerSource, "SONDEHUB") || Objects.equals(sondeMarkerSource, "RADIOSONDY")) && (data_age > 120));
+                        sondeMarker.setVisible(!hide);
                     sondeMarker.setPosition(new GeoPoint(sonde.lat, sonde.lon));
                     sondeMarker.setTitle("POSITION\n" + sonde.lat + " " + sonde.lon + "\n" + sonde.alt + "m\n" + new Date(sonde.time) + "\n" + source + "\n");
 
@@ -268,6 +304,7 @@ public class MapUpdater implements Runnable {
             homeFragment.requireActivity().runOnUiThread(() -> {
                 rsPathLine.setPoints(rs_col.getSondeTrack());
                 rsPredLine.setPoints(rs_col.getPrediction());
+                shPathLine.setPoints(sh_col.getSondeTrack());
                 shPredLine.setPoints(sh_col.getPrediction());
                 localPathLine.setPoints(lc_col.getSondeTrack());
             });
@@ -368,25 +405,29 @@ public class MapUpdater implements Runnable {
             homeFragment.requireActivity().runOnUiThread(() -> {
                 if(rs_col.getLastSonde() != null) {
                     long rs_data_age = (new Date().getTime() / 1000 - rs_col.getLastSonde().time / 1000);
-                    SimpleDateFormat time_format = new SimpleDateFormat("HH:mm:ss");
-
-                        rsLastMarker.setVisible((rs_data_age > 120));
-                        rsLastMarker.setPosition(new GeoPoint(rs_col.getLastSonde().lat, rs_col.getLastSonde().lon));
-                        rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n"+rs_col.getLastSonde().lat + " " + rs_col.getLastSonde().lon + "\n" + rs_col.getLastSonde().alt + "m\n" + new Date(rs_col.getLastSonde().time) + "\n");
+                    rsLastMarker.setVisible((rs_data_age > 120));
+                    rsLastMarker.setPosition(new GeoPoint(rs_col.getLastSonde().lat, rs_col.getLastSonde().lon));
+                    rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n"+rs_col.getLastSonde().lat + " " + rs_col.getLastSonde().lon + "\n" + rs_col.getLastSonde().alt + "m\n" + new Date(rs_col.getLastSonde().time) + "\n");
                 } else {
                     rsLastMarker.setVisible(false);
                 }
 
                 if(lc_col.getLastSonde() != null) {
                     long lc_data_age = (new Date().getTime() / 1000 - lc_col.getLastSonde().time / 1000);
-                    SimpleDateFormat time_format = new SimpleDateFormat("HH:mm:ss");
-
                     localLastMarker.setVisible((lc_data_age > 20));
                     localLastMarker.setPosition(new GeoPoint(lc_col.getLastSonde().lat, lc_col.getLastSonde().lon));
                     localLastMarker.setTitle("LOCAL LAST POSITION\n"+lc_col.getLastSonde().lat + " " + lc_col.getLastSonde().lon + "\n" + lc_col.getLastSonde().alt + "m\n" + new Date(lc_col.getLastSonde().time) + "\n");
-
                 } else {
                     localLastMarker.setVisible(false);
+                }
+
+                if(sh_col.getLastSonde() != null) {
+                    long sh_data_age = (new Date().getTime() / 1000 - sh_col.getLastSonde().time / 1000);
+                    shLastMarker.setVisible((sh_data_age > 20));
+                    shLastMarker.setPosition(new GeoPoint(sh_col.getLastSonde().lat, sh_col.getLastSonde().lon));
+                    shLastMarker.setTitle("SONDEHUB LAST POSITION\n"+sh_col.getLastSonde().lat + " " + sh_col.getLastSonde().lon + "\n" + sh_col.getLastSonde().alt + "m\n" + new Date(sh_col.getLastSonde().time) + "\n");
+                } else {
+                    shLastMarker.setVisible(false);
                 }
             });
         } catch (Exception ignored){}
