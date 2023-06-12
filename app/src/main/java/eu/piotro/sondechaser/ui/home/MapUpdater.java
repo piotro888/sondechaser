@@ -311,9 +311,9 @@ public class MapUpdater {
     public void updateStatus(int rs_color, int sh_color, int lc_color) {
         try {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                ((TextView) homeFragment.requireView().findViewById(R.id.textstatl)).setTextColor(rs_color);
+                ((TextView) homeFragment.requireView().findViewById(R.id.textstatl)).setTextColor(lc_color);
                 ((TextView) homeFragment.requireView().findViewById(R.id.textstats)).setTextColor(sh_color);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textstatr)).setTextColor(lc_color);
+                ((TextView) homeFragment.requireView().findViewById(R.id.textstatr)).setTextColor(rs_color);
             });
         }catch (Exception ignored){}
     }

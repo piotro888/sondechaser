@@ -67,7 +67,6 @@ public class DataCollector implements Runnable {
     }
 
     private GeoPoint toGeoPoint(Location l) {
-        System.out.println(l);
         if (l == null)
             return null;
         return new GeoPoint(l.getLatitude(), l.getLongitude());

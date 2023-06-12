@@ -54,8 +54,11 @@ public class RadiosondyCollector implements Runnable {
             while (!Thread.interrupted()) {
                 if (!archive)
                     downloadFlyingMapData();
-                if ((i++)%3 == 0)
+                if ((i++)%3 == 0) {
                     downloadPrediction();
+                    if (archive)
+                        downloadArchive();
+                }
                 Thread.sleep(15000);
             }
         } catch (InterruptedException ignored) {}
@@ -188,6 +191,53 @@ public class RadiosondyCollector implements Runnable {
         }
     }
 
+    private class ParseArchive implements SondeParser {
+        public void parse(String data) {
+            try {
+                JSONObject json = new JSONObject(data);
+                JSONArray feat = json.getJSONArray("features");
+
+                if (feat.length() == 0) {
+                    archive = true;
+                    return;
+                }
+
+                JSONObject curr = feat.getJSONObject(3);
+                Sonde sonde = new Sonde();
+                sonde.lon = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
+                sonde.lat = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1);
+
+                sonde.alt = curr.getJSONObject("geometry").getJSONArray("coordinates").getInt(2);
+
+                //sonde.vspeed = 0;
+
+                String time_str = curr.getJSONObject("properties").getString("description");
+                System.err.println(time_str.substring(11, 11+19));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                sonde.time = sdf.parse(time_str.substring(11, 11+19)).getTime();
+
+                synchronized (dataLock) {
+                    lastSonde = sonde;
+                }
+
+                JSONArray path = feat.getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates");
+                ArrayList<GeoPoint> gps = new ArrayList<>();
+                for (int i=path.length()-1; i>=0; i-=10) {
+                    JSONArray entry = path.getJSONArray(i);
+                    gps.add(new GeoPoint(entry.getDouble(1), entry.getDouble(0)));
+                    System.out.println(entry.getDouble(0));
+                }
+                synchronized (dataLock) {
+                    track = gps;
+                }
+                last_decoded = new Date().getTime();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void downloadFlyingMapData() {
         try {
             URL url = new URL(BASE_URL + "export/export_map.php?sonde_map=1&sondenumber=" + sondeName);
@@ -199,6 +249,13 @@ public class RadiosondyCollector implements Runnable {
         try {
             URL url = new URL(BASE_URL + "mail_reports/PREDICT/"+sondeName+"_predict.kml");
             downloadData(url, new ParsePredict());
+        } catch (Exception ignored) {}
+    }
+
+    private void downloadArchive() {
+        try {
+            URL url = new URL(BASE_URL + "sonde-data/GeoJSON/M/"+sondeName+".json");
+            downloadData(url, new ParseArchive());
         } catch (Exception ignored) {}
     }
 
