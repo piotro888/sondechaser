@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import eu.piotro.sondechaser.ui.home.MapUpdater;
+import eu.piotro.sondechaser.ui.slideshow.SlideshowFragment;
 
 
 public class DataCollector implements Runnable {
@@ -26,7 +27,8 @@ public class DataCollector implements Runnable {
     private SondeHubCollector sh_col;
     private LocalServerCollector lc_col;
 
-    private GpsMyLocationProvider locationProvider;
+    public GpsMyLocationProvider locationProvider;
+    public Orientation orientationProvider;
 
     private final ElevationApi elapi = new ElevationApi();
 
@@ -36,19 +38,32 @@ public class DataCollector implements Runnable {
     private final Activity rootActivity;
 
     private MapUpdater mapUpdater = null;
+    private SlideshowFragment compassUpdater = null;
     private boolean stop = false;
 
     public DataCollector(Activity rootActivity) {
         this.rootActivity = rootActivity;
 
-        locationProvider = new GpsMyLocationProvider(rootActivity.getBaseContext());
-        locationProvider.setLocationUpdateMinTime(1000);
-        locationProvider.setLocationUpdateMinDistance(0.1f);
-        locationProvider.startLocationProvider(null);
+        locationProvider = new GpsMyLocationProvider(rootActivity);
+        locationProvider.setLocationUpdateMinTime(2000);
+        locationProvider.setLocationUpdateMinDistance(2f);
+        locationProvider.startLocationProvider((l,a)->{
+            System.out.println("CONSUME"+l);
+        });
+
+        orientationProvider = new Orientation(rootActivity);
     }
 
     public void setMapUpdater(MapUpdater mapUpdater) {
         this.mapUpdater = mapUpdater;
+    }
+
+    public void setCompassUpdater(SlideshowFragment compassUpdater) {
+        this.compassUpdater = compassUpdater;
+    }
+
+    public GpsMyLocationProvider getLocationProvider() {
+        return locationProvider;
     }
 
     private GeoPoint toGeoPoint(Location l) {
@@ -84,7 +99,7 @@ public class DataCollector implements Runnable {
             while (!stop) {
                 update();
 
-                Thread.sleep(1000);
+                Thread.sleep(200);
             }
         } catch (InterruptedException ignored) {}
     }
@@ -117,6 +132,8 @@ public class DataCollector implements Runnable {
             mapUpdater.updatePredictionMarkers(rs_col.getPredictionPoint(), sh_col.getPredictionPoint(), lc_col.getPredictionPoint());
         if (mapUpdater != null)
             mapUpdater.updateTraces(rs_col, sh_col, lc_col);
+
+        updateCompass();
 
         lc_col.updateTerrainAlt(elapi.alt);
     }
@@ -203,8 +220,60 @@ public class DataCollector implements Runnable {
             mapUpdater.updateStatus(rcol, scol, lc);
     }
 
+    public void updateCompass() {
+        if (compassUpdater == null)
+            return;
+        GeoPoint trg = null;
+        int alt = 0;
+        int age = -1;
+        if (compassUpdater.getTarget().equals("POSITION LOCAL")) {
+            if(lc_col.getLastSonde() != null) {
+                trg = new GeoPoint(lc_col.getLastSonde().lat, lc_col.getLastSonde().lon);
+                alt = lc_col.getLastSonde().alt;
+                age = (int) (new Date().getTime() / 1000 - lc_col.getLastSonde().time / 1000);
+            }
+        } else if (compassUpdater.getTarget().equals("POSITION RADIOSONDY")) {
+            if(rs_col.getLastSonde() != null) {
+                trg = new GeoPoint(rs_col.getLastSonde().lat, rs_col.getLastSonde().lon);
+                alt = rs_col.getLastSonde().alt;
+                age = (int) (new Date().getTime() / 1000 - rs_col.getLastSonde().time / 1000);
+            }
+        } else if (compassUpdater.getTarget().equals("POSITION SONDEHUB")) {
+            if(sh_col.getLastSonde() != null) {
+                trg = new GeoPoint(sh_col.getLastSonde().lat, sh_col.getLastSonde().lon);
+                alt = sh_col.getLastSonde().alt;
+                age = (int) (new Date().getTime() / 1000 - sh_col.getLastSonde().time / 1000);
+            }
+        } else if (compassUpdater.getTarget().equals("PREDICTION LOCAL")) {
+            if (lc_col.getPredictionPoint() != null) {
+                trg = lc_col.getPredictionPoint().point;
+                alt = lc_col.getPredictionPoint().alt;
+                if (lc_col.getLastSonde() != null)
+                    age = (int) (new Date().getTime() / 1000 - lc_col.getLastSonde().time / 1000);
+            }
+        } else if (compassUpdater.getTarget().equals("PREDICTION RADIOSONDY")) {
+            if (rs_col.getPredictionPoint() != null) {
+                trg = rs_col.getPredictionPoint().point;
+                alt = rs_col.getPredictionPoint().alt;
+            }
+        } else if (compassUpdater.getTarget().equals("PREDICTION SONDEHUB")) {
+            if (sh_col.getPredictionPoint() != null) {
+                trg = sh_col.getPredictionPoint().point;
+                alt = sh_col.getPredictionPoint().alt;
+                age = (int) (new Date().getTime() / 1000 - pred_changed_time / 1000);
+            }
+        }
+        compassUpdater.update(locationProvider.getLastKnownLocation(), trg, alt, orientationProvider.getAzimuth(), age);
+    }
+
+    public void onResume() {
+        locationProvider.startLocationProvider(null);
+    }
+
     public void onDestroy() {
         locationProvider.stopLocationProvider();
+        mapUpdater = null;
+        compassUpdater = null;
         stop = true;
     }
 }

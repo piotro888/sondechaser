@@ -34,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        dataCollector = new DataCollector(this);
 
+        super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        dataCollector = new DataCollector(this);
         Thread dataCollectorThread = new Thread(dataCollector);
         dataCollectorThread.start();
     }
@@ -86,11 +86,16 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-
     @Override
     protected void onDestroy() {
         dataCollector.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dataCollector.onResume();
     }
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

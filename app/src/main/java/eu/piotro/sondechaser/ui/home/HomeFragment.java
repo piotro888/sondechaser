@@ -37,7 +37,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
-        //System.out.println("VIEVCREATED");
         mapView = v.findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
 
