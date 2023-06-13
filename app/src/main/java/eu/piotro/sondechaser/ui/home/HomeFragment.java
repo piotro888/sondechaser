@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -50,13 +52,29 @@ public class HomeFragment extends Fragment {
         mapView.getOverlays().add(rotationOverlay);
 
         mapView.post(
-                () -> mapView.zoomToBoundingBox(new BoundingBox(51, 17, 50, 16), false)
+                () -> {
+                    mapView.getController().setZoom(11.0);
+                    boolean set = false;
+                    try {
+                        if (((MainActivity) getActivity()).dataCollector.locationProvider.getLastKnownLocation() != null) {
+                            mapView.getController().setCenter(new GeoPoint(((MainActivity) getActivity()).dataCollector.locationProvider.getLastKnownLocation()));
+                            set = true;
+                        }
+                    } catch (Exception ignored) {}
+
+                    if(!set)
+                        mapView.getController().setCenter(new GeoPoint(51.107, 17.038));
+                }
         );
 
         updater = new MapUpdater(this);
 
         v.findViewById(R.id.northbtn).setOnClickListener((_v) -> mapView.setMapOrientation(0));
         v.findViewById(R.id.locbtn).setOnClickListener((_v) -> {
+            if (locationOverlay.getMyLocation() == null) {
+                Toast.makeText(getContext(), "No location", Toast.LENGTH_SHORT).show();
+                return;
+            }
             mapView.getController().animateTo(locationOverlay.getMyLocation());
         });
 

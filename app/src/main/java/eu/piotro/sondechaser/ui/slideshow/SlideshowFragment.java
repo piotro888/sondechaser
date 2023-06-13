@@ -85,7 +85,7 @@ public class SlideshowFragment extends Fragment {
 
             if (target != null) {
                 binding.ctftcord.setText(cordformat.format(target.getLatitude()) + "° " + cordformat.format(target.getLongitude()) + "° ");
-                binding.ctftalt.setText(distformat.format(target.getAltitude()) + "m");
+                binding.ctftalt.setText(distformat.format(target_alt) + "m");
                 binding.ctftage.setText(age == -1 ? "N/A" : age+"s");
             } else {
                 binding.ctftcord.setText("N/A");

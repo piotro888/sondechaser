@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ui.slideshow.SlideshowFragment">
 
+    <ImageView
+        android:id="@+id/imageView15"
+        android:layout_width="27dp"
+        android:layout_height="0dp"
+        android:src="@drawable/distance"
+        app:layout_constraintBottom_toBottomOf="@+id/ctfycord"
+        app:layout_constraintEnd_toStartOf="@+id/ctfycord"
+        app:layout_constraintTop_toTopOf="@+id/ctfycord" />
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
@@ -52,8 +61,9 @@
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="302dp"
-        android:layout_height="21dp"
+        android:layout_height="30dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="20dp"
         android:background="#5CB8B1B1"
         android:entries="@array/tareget_sel"
@@ -65,8 +75,9 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Target"
+        android:layout_marginTop="10dp"
+        android:text="Select Target:"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +90,7 @@
         android:text="TARGET"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ctftcord"
-        app:layout_constraintStart_toStartOf="@+id/ctftcord" />
+        app:layout_constraintStart_toStartOf="@+id/imageView14" />
 
     <TextView
         android:id="@+id/textView14"
@@ -89,13 +100,13 @@
         android:text="YOU"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ctfycord"
-        app:layout_constraintStart_toStartOf="@+id/ctfycord" />
+        app:layout_constraintStart_toStartOf="@+id/imageView15" />
 
     <TextView
         android:id="@+id/ctftcord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="40dp"
         android:layout_marginBottom="16dp"
         android:text="51.123454 16.43245"
         app:layout_constraintBottom_toTopOf="@+id/textView14"
@@ -105,7 +116,7 @@
         android:id="@+id/ctfycord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="40dp"
         android:layout_marginBottom="16dp"
         android:text="51.123454 16.43245"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -161,6 +172,7 @@
         android:id="@+id/ctfgpsa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="2m"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -222,5 +234,50 @@
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_compass"
+        app:layout_constraintBottom_toBottomOf="@+id/ctftydir"
+        app:layout_constraintEnd_toStartOf="@+id/ctftydir"
+        app:layout_constraintTop_toTopOf="@+id/ctftydir" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hourglass"
+        app:layout_constraintBottom_toBottomOf="@+id/ctftage"
+        app:layout_constraintEnd_toStartOf="@+id/ctftage"
+        app:layout_constraintTop_toTopOf="@+id/ctftage" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/height"
+        app:layout_constraintBottom_toBottomOf="@+id/ctfyalt"
+        app:layout_constraintEnd_toStartOf="@+id/ctfyalt"
+        app:layout_constraintTop_toTopOf="@+id/ctfyalt" />
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/height"
+        app:layout_constraintBottom_toBottomOf="@+id/ctftalt"
+        app:layout_constraintEnd_toStartOf="@+id/ctftalt"
+        app:layout_constraintTop_toTopOf="@+id/ctftalt" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="27dp"
+        android:layout_height="0dp"
+        android:src="@drawable/distance"
+        app:layout_constraintBottom_toBottomOf="@+id/ctftcord"
+        app:layout_constraintEnd_toStartOf="@+id/ctftcord"
+        app:layout_constraintTop_toTopOf="@+id/ctftcord" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

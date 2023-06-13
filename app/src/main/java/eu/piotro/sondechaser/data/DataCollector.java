@@ -36,15 +36,15 @@ public class DataCollector implements Runnable {
     private SlideshowFragment compassUpdater = null;
     private boolean stop = false;
 
+    public boolean showSondeSet = false;
+
     public DataCollector(Activity rootActivity) {
         this.rootActivity = rootActivity;
 
         locationProvider = new GpsMyLocationProvider(rootActivity);
         locationProvider.setLocationUpdateMinTime(2000);
         locationProvider.setLocationUpdateMinDistance(2f);
-        locationProvider.startLocationProvider((l,a)->{
-            System.out.println("CONSUME"+l);
-        });
+        locationProvider.startLocationProvider(null);
 
         orientationProvider = new Orientation(rootActivity);
     }
@@ -64,6 +64,8 @@ public class DataCollector implements Runnable {
     private GeoPoint toGeoPoint(Location l) {
         if (l == null)
             return null;
+        if (new Date().getTime() - l.getTime() > 20000)
+            return null;
         return new GeoPoint(l.getLatitude(), l.getLongitude());
     }
 
@@ -75,10 +77,18 @@ public class DataCollector implements Runnable {
         elapi_thread.start();
 
         try {
+            int it = 0;
             while (!stop) {
                 update();
 
                 Thread.sleep(200);
+
+                if((++it)%10 == 0 && toGeoPoint(locationProvider.getLastKnownLocation()) == null) {
+                    rootActivity.runOnUiThread(() -> {
+                        System.out.println("rs");
+                        System.out.println((locationProvider.startLocationProvider(null)));
+                    });
+                }
             }
         } catch (InterruptedException ignored) {}
     }
@@ -104,9 +114,19 @@ public class DataCollector implements Runnable {
         Thread sh_thread = new Thread(sh_col, "shcol");
         Thread lc_thread = new Thread(lc_col, "lccol");
 
-        rs_thread.start();
-        sh_thread.start();
-        lc_thread.start();
+        showSondeSet = true;
+        if(!sharedPref.getString("rsid", "").equals("")) {
+            rs_thread.start();
+            showSondeSet = false;
+        }
+        if(!sharedPref.getString("shid", "").equals("")) {
+            sh_thread.start();
+            showSondeSet = false;
+        }
+        if(!sharedPref.getString("lcid", "").equals("")) {
+            lc_thread.start();
+            showSondeSet = false;
+        }
     }
     void update() {
         // Sonde marker and Position data
@@ -122,6 +142,7 @@ public class DataCollector implements Runnable {
         else
             updatePosition(sh_last_sonde, "SONDEHUB");
 
+
         // Prediction data
         if (sh_col.getPrediction() != null)
             updatePredictionData(sh_col.getPredictionPoint(), rs_col.getStartTime(), "SONDEHUB");
@@ -136,6 +157,8 @@ public class DataCollector implements Runnable {
             mapUpdater.updatePredictionMarkers(rs_col.getPredictionPoint(), sh_col.getPredictionPoint(), lc_col.getPredictionPoint());
         if (mapUpdater != null)
             mapUpdater.updateTraces(rs_col, sh_col, lc_col);
+        if(mapUpdater != null && showSondeSet)
+            mapUpdater.updateSondeSet(showSondeSet);
 
         updateCompass();
 
@@ -144,6 +167,9 @@ public class DataCollector implements Runnable {
 
     void updatePosition(Sonde sonde, String source) {
         if (sonde == null) {
+            if (mapUpdater != null) {;
+                mapUpdater.updatePosition(null, "?", false, 0,0);
+            }
             return;
         }
 
@@ -190,8 +216,8 @@ public class DataCollector implements Runnable {
         }
 
 
-        long data_age = (new Date().getTime()/1000 - pred_changed_time/1000);
-        long start_elapsed = (new Date().getTime() - start_time);
+        long data_age = pred_changed_time > 0 ? (new Date().getTime()/1000 - pred_changed_time/1000) : -1;
+        long start_elapsed = start_time>0 ? (new Date().getTime() - start_time) : 0;
         long time_to_end = (point != null ? (point.time - new Date().getTime()) : 0);
 
         GeoPoint location = toGeoPoint(locationProvider.getLastKnownLocation());

@@ -86,9 +86,24 @@
             android:background="#7AFFFFFF"
             android:text="Map ©OpenStreetMap contributors\nSondeChaser ©Piotr Węgrzyn\nData:\n©Michał Lewiński (radiosondy.info)\n©Rossen Georgiev (sondehub.org)\n©Open-Meteo.com"
             android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvsondeset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Select SONDE from Settings menu"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/map" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -168,7 +183,7 @@
             android:id="@+id/textposhdg"
             android:layout_width="30dp"
             android:layout_height="14dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="6dp"
             android:text="150()"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/textposdist"
@@ -179,7 +194,7 @@
             android:id="@+id/textpredhdg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="6dp"
             android:text="150()"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
             app:layout_constraintStart_toEndOf="@+id/textpreddist"
@@ -192,7 +207,8 @@
             android:text="02:03:51"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView8"
+            app:layout_constraintHorizontal_bias="0.84"
             app:layout_constraintStart_toEndOf="@+id/textpredhdg"
             app:layout_constraintTop_toTopOf="@+id/textpreddist" />
 
