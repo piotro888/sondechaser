@@ -13,7 +13,8 @@
         android:src="@drawable/distance"
         app:layout_constraintBottom_toBottomOf="@+id/ctfycord"
         app:layout_constraintEnd_toStartOf="@+id/ctfycord"
-        app:layout_constraintTop_toTopOf="@+id/ctfycord" />
+        app:layout_constraintTop_toTopOf="@+id/ctfycord"
+        app:tint="@color/blackaware" />
 
     <TextView
         android:id="@+id/textView10"
@@ -242,7 +243,8 @@
         android:src="@drawable/icon_compass"
         app:layout_constraintBottom_toBottomOf="@+id/ctftydir"
         app:layout_constraintEnd_toStartOf="@+id/ctftydir"
-        app:layout_constraintTop_toTopOf="@+id/ctftydir" />
+        app:layout_constraintTop_toTopOf="@+id/ctftydir"
+        app:tint="@color/blackaware" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -251,7 +253,8 @@
         android:src="@drawable/hourglass"
         app:layout_constraintBottom_toBottomOf="@+id/ctftage"
         app:layout_constraintEnd_toStartOf="@+id/ctftage"
-        app:layout_constraintTop_toTopOf="@+id/ctftage" />
+        app:layout_constraintTop_toTopOf="@+id/ctftage"
+        app:tint="@color/blackaware" />
 
     <ImageView
         android:id="@+id/imageView12"
@@ -260,7 +263,8 @@
         android:src="@drawable/height"
         app:layout_constraintBottom_toBottomOf="@+id/ctfyalt"
         app:layout_constraintEnd_toStartOf="@+id/ctfyalt"
-        app:layout_constraintTop_toTopOf="@+id/ctfyalt" />
+        app:layout_constraintTop_toTopOf="@+id/ctfyalt"
+        app:tint="@color/blackaware" />
 
     <ImageView
         android:id="@+id/imageView13"
@@ -269,7 +273,8 @@
         android:src="@drawable/height"
         app:layout_constraintBottom_toBottomOf="@+id/ctftalt"
         app:layout_constraintEnd_toStartOf="@+id/ctftalt"
-        app:layout_constraintTop_toTopOf="@+id/ctftalt" />
+        app:layout_constraintTop_toTopOf="@+id/ctftalt"
+        app:tint="@color/blackaware" />
 
     <ImageView
         android:id="@+id/imageView14"
@@ -278,6 +283,16 @@
         android:src="@drawable/distance"
         app:layout_constraintBottom_toBottomOf="@+id/ctftcord"
         app:layout_constraintEnd_toStartOf="@+id/ctftcord"
-        app:layout_constraintTop_toTopOf="@+id/ctftcord" />
+        app:layout_constraintTop_toTopOf="@+id/ctftcord"
+        app:tint="@color/blackaware" />
+
+    <TextView
+        android:id="@+id/tvsource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="GPS"
+        app:layout_constraintBottom_toTopOf="@+id/ctftydir"
+        app:layout_constraintStart_toStartOf="@+id/imageView10" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -138,7 +138,6 @@ public class RadiosondyCollector implements Runnable {
                 for (int i=path.length()-1; i>=0; i-=10) {
                     JSONArray entry = path.getJSONArray(i);
                     gps.add(new GeoPoint(entry.getDouble(1), entry.getDouble(0)));
-                    System.out.println(entry.getDouble(0));
                 }
                 synchronized (dataLock) {
                     track = gps;
@@ -169,7 +168,6 @@ public class RadiosondyCollector implements Runnable {
                 int last_alt = 0;
 
                 while (cidx<cstr.length()) {
-                    System.out.println(cidx);
                     int fsti = cstr.indexOf(",", cidx);
                     float lon = Float.parseFloat(cstr.substring(cidx, fsti-1));
                     cidx = fsti+1;

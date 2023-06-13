@@ -8,6 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="blackaware">#FF000000</color>
-    <color name="whiteaware">#FFFFFFFF</color>
+    <color name="blackaware">#FFFFFFFF</color>
+    <color name="whiteaware">#FF000000</color>
 </resources>

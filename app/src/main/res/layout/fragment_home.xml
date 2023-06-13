@@ -37,7 +37,8 @@
             android:scaleType="fitCenter"
             android:src="@drawable/location"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/blackaware" />
 
         <ImageButton
             android:id="@+id/refrbtn"
@@ -50,7 +51,8 @@
             android:scaleType="fitCenter"
             android:src="@drawable/baseline_refresh_24"
             app:layout_constraintBottom_toTopOf="@+id/predbtn"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/blackaware" />
 
         <ImageButton
             android:id="@+id/northbtn"
@@ -88,7 +90,7 @@
             android:padding="7dp"
             android:scaleType="fitCenter"
             android:src="@drawable/distance"
-            android:tint="#009688"
+            app:tint="#009688"
             app:layout_constraintBottom_toTopOf="@+id/posbtn"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -253,7 +255,8 @@
             android:src="@drawable/mountains"
             app:layout_constraintBottom_toBottomOf="@+id/textaog"
             app:layout_constraintEnd_toStartOf="@+id/textaog"
-            app:layout_constraintTop_toTopOf="@+id/textaog" />
+            app:layout_constraintTop_toTopOf="@+id/textaog"
+            app:tint="@color/blackaware" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -262,7 +265,8 @@
             android:src="@drawable/height"
             app:layout_constraintBottom_toBottomOf="@+id/textalt"
             app:layout_constraintEnd_toStartOf="@+id/textalt"
-            app:layout_constraintTop_toTopOf="@+id/textalt" />
+            app:layout_constraintTop_toTopOf="@+id/textalt"
+            app:tint="@color/blackaware" />
 
         <TextView
             android:id="@+id/textView17"
@@ -309,7 +313,8 @@
             android:src="@drawable/distance"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
             app:layout_constraintEnd_toStartOf="@+id/textpreddist"
-            app:layout_constraintTop_toTopOf="@+id/textpreddist" />
+            app:layout_constraintTop_toTopOf="@+id/textpreddist"
+            app:tint="@color/blackaware" />
 
         <ImageView
             android:id="@+id/imageView6"
@@ -319,7 +324,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/textposdist"
             app:layout_constraintStart_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/textposdist"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:tint="@color/blackaware" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -329,7 +335,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/textpredtime"
             app:layout_constraintEnd_toStartOf="@+id/textpredtime"
             app:layout_constraintTop_toTopOf="@+id/textpredtime"
-            app:layout_constraintVertical_bias="0.25" />
+            app:layout_constraintVertical_bias="0.25"
+            app:tint="@color/blackaware" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -338,7 +345,8 @@
             android:src="@drawable/stopwatch"
             app:layout_constraintBottom_toBottomOf="@+id/textpostime"
             app:layout_constraintEnd_toStartOf="@+id/textpostime"
-            app:layout_constraintTop_toTopOf="@+id/textpostime" />
+            app:layout_constraintTop_toTopOf="@+id/textpostime"
+            app:tint="@color/blackaware" />
 
         <TextView
             android:id="@+id/textposage"
@@ -367,7 +375,8 @@
             android:src="@drawable/hourglass"
             app:layout_constraintBottom_toBottomOf="@+id/textpredage"
             app:layout_constraintEnd_toStartOf="@+id/textpredage"
-            app:layout_constraintTop_toTopOf="@+id/textpredage" />
+            app:layout_constraintTop_toTopOf="@+id/textpredage"
+            app:tint="@color/blackaware" />
 
         <ImageView
             android:id="@+id/imageView9"
@@ -376,7 +385,8 @@
             android:src="@drawable/hourglass"
             app:layout_constraintBottom_toBottomOf="@+id/textposage"
             app:layout_constraintEnd_toStartOf="@+id/textposage"
-            app:layout_constraintTop_toTopOf="@+id/textposage" />
+            app:layout_constraintTop_toTopOf="@+id/textposage"
+            app:tint="@color/blackaware" />
 
         <TextView
             android:id="@+id/textstats"
@@ -418,7 +428,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/textvspeed"
             app:layout_constraintStart_toEndOf="@+id/textalt"
             app:layout_constraintTop_toTopOf="@+id/textvspeed"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:tint="@color/blackaware" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

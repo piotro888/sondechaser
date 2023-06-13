@@ -151,7 +151,7 @@ public class DataCollector implements Runnable {
 
 
         // Prediction data
-        if (sh_col.getPrediction() != null)
+        if (sh_col.getPredictionPoint() != null)
             updatePredictionData(sh_col.getPredictionPoint(), rs_col.getStartTime(), "SONDEHUB");
         else
             updatePredictionData(rs_col.getPredictionPoint(), rs_col.getStartTime(), "RADIOSONDY");

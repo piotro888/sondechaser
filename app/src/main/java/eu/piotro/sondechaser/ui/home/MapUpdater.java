@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
@@ -181,7 +182,7 @@ public class MapUpdater {
                                     ((sonde.vspeed >= 0 ? "+?" : "-?") + " (r: "+Math.abs(sonde.vspeed)+")"));
                     homeFragment.requireView().findViewById(R.id.imagevsarrow).setRotation(180 * ((sonde.vspeed < 0) ? 1 : 0));
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setText(data_age + "s");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setTextColor(data_age > 120 ? Color.RED : Color.BLACK);
+                    ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setTextColor(data_age > 120 ? Color.RED : ResourcesCompat.getColor(homeFragment.getResources(), android.R.color.secondary_text_dark, null));
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposdist)).setText(final_posdist_km);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textposhdg)).setText(final_bearing_str);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textpossrc)).setText("(" + source + ")");

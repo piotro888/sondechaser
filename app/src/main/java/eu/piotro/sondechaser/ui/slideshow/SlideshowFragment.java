@@ -81,7 +81,8 @@ public class SlideshowFragment extends Fragment {
 
             final String[] diro = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
             int idx = (((bear + (360/8/2)))%360)/(360/8);
-            binding.ctftydir.setText(bear + "° (" + (diro[idx]) + ") " + (use_gps_az?"GPS":"COMPASS"));
+            binding.tvsource.setText(use_gps_az ? "GPS BEARING":"COMPASS SENSOR");
+            binding.ctftydir.setText(bear + "° (" + (diro[idx]) + ")");
 
             if (target != null) {
                 binding.ctftcord.setText(cordformat.format(target.getLatitude()) + "° " + cordformat.format(target.getLongitude()) + "° ");
