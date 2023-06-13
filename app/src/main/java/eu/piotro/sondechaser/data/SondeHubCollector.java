@@ -1,5 +1,8 @@
 package eu.piotro.sondechaser.data;
 
+import android.app.Activity;
+import android.widget.PopupMenu;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
@@ -28,13 +31,16 @@ public class SondeHubCollector implements Runnable {
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
     //long start_time = 0;
-    public long last_decoded;
+    public volatile long last_decoded;
     private final Object dataLock = new Object();
 
     private String sondeName = null;
     public void setSondeName(String name) {
         sondeName = name;
     }
+
+    private ArrayList<String> sonde_entries = null;
+    private volatile boolean stop = false;
 
 
     @Override
@@ -44,12 +50,13 @@ public class SondeHubCollector implements Runnable {
         lastSonde = null;
         track = new ArrayList<>();
 
-        try {
-            while (!Thread.interrupted()) {
-                downloadPrediction();
-                Thread.sleep(30000);
-            }
-        } catch (InterruptedException ignored) {}
+        while (!stop) {
+            downloadPrediction();
+            try {
+            Thread.sleep(30000);
+            } catch (InterruptedException ignored) {
+        }
+        }
     }
 
     private void downloadData(URL url, SondeParser parser) {
@@ -119,7 +126,7 @@ public class SondeHubCollector implements Runnable {
                     lastSonde = sonde;
                     pred_point = point;
                     prediction = gps;
-                    if (track.size() > 0 && (track.get(track.size()-1).getLatitude() != sonde.lat ||
+                    if (track.size() == 0 || (track.get(track.size()-1).getLatitude() != sonde.lat ||
                                              track.get(track.size()-1).getLongitude() != sonde.lon))
                         track.add(new GeoPoint(sonde.lat, sonde.lon));
                 }
@@ -157,4 +164,46 @@ public class SondeHubCollector implements Runnable {
             return track;
         }
     }
+
+    public void stop() {
+        stop = true;
+    }
+
+    private class ParseSondeList implements SondeParser {
+        public void parse(String data) {
+            sonde_entries = new ArrayList<>();
+            sonde_entries.add("Sondehub:");
+            try {
+                JSONObject json = new JSONObject(data);
+                JSONArray names = json.names();
+                System.out.println(names);
+                for (int i=0; i<names.length(); i++) {
+                    String name = names.getString(i);
+                    sonde_entries.add(name);
+                }
+            } catch (Exception e) {
+                sonde_entries.add("Error fetching sonde list");
+                e.printStackTrace();
+            }
+        }
+    }
+    public void fillMenu(Activity activity, PopupMenu menu) {
+        Thread updateThread = new Thread(()-> {
+            try {
+                URL url = new URL(BASE_URL + "sondes/telemetry?duration=1h");
+                downloadData(url, new ParseSondeList());
+
+                activity.runOnUiThread(()-> {
+                    menu.dismiss();
+                    menu.getMenu().clear();
+                    for (String s : sonde_entries)
+                        menu.getMenu().add(s);
+                    menu.show();
+                });
+
+            } catch (Exception ignored) {}
+        });
+        updateThread.start();
+    }
+
 }

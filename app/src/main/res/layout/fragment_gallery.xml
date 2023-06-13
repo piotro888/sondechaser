@@ -78,4 +78,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tfip" />
+
+    <ImageButton
+        android:id="@+id/searchrs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_search_24"
+        app:layout_constraintBottom_toBottomOf="@+id/tfrs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tfrs"
+        app:layout_constraintTop_toTopOf="@+id/tfrs" />
+
+    <ImageButton
+        android:id="@+id/searchsh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_search_24"
+        app:layout_constraintBottom_toBottomOf="@+id/tfsh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tfsh"
+        app:layout_constraintTop_toTopOf="@+id/tfsh" />
 </androidx.constraintlayout.widget.ConstraintLayout>

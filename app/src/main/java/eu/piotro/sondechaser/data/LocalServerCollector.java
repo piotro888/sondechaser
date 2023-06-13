@@ -26,6 +26,8 @@ public class LocalServerCollector implements Runnable {
 
     private int terrain_alt = 0;
 
+    private volatile boolean stop = false;
+
     public LocalServerCollector(String ip) {
         BASE_URL = "http://" + ip + "/";
     }
@@ -37,12 +39,12 @@ public class LocalServerCollector implements Runnable {
         prediction = new ArrayList<>();
         last_success = 0;
 
-        try {
-            while (!Thread.interrupted()) {
-                download();
+        while (!stop) {
+            download();
+            try {
                 Thread.sleep(2000);
-            }
-        } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {}
+        }
     }
 
     private void downloadData(URL url, SondeParser parser) {
@@ -160,5 +162,9 @@ public class LocalServerCollector implements Runnable {
 
     public void updateTerrainAlt(int alt) {
         terrain_alt = alt;
+    }
+
+    public void stop() {
+        stop = true;
     }
 }

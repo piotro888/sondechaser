@@ -1,10 +1,15 @@
 package eu.piotro.sondechaser.data;
 
+import android.app.Activity;
+import android.view.Menu;
+import android.widget.PopupMenu;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
@@ -14,6 +19,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -26,18 +32,23 @@ public class RadiosondyCollector implements Runnable {
     private ArrayList<GeoPoint> track;
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
-    long start_time = 0;
+    volatile long start_time = 0;
 
     private boolean archive;
     private final Object dataLock = new Object();
 
-    public long last_decoded;
+    public volatile long last_decoded;
+
+    private ArrayList<String> sonde_entries = null;
+    private HashSet<String> sonde_notifications = new HashSet<>();
 
 
     private String sondeName = null;
     public void setSondeName(String name) {
         sondeName = name;
     }
+
+    private volatile boolean stop = false;
 
 
     @Override
@@ -49,19 +60,20 @@ public class RadiosondyCollector implements Runnable {
         prediction = new ArrayList<>();
         pred_point = null;
 
-        try {
-            int i = 0;
-            while (!Thread.interrupted()) {
-                if (!archive)
-                    downloadFlyingMapData();
-                if ((i++)%3 == 0) {
-                    downloadPrediction();
-                    if (archive)
-                        downloadArchive();
-                }
-                Thread.sleep(15000);
+
+        int i = 0;
+        while (!stop) {
+            if (!archive)
+                downloadFlyingMapData();
+            if ((i++)%3 == 0) {
+                downloadPrediction();
+                if (archive)
+                    downloadArchive();
             }
-        } catch (InterruptedException ignored) {}
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ignored) {}
+        }
     }
 
     private void downloadData(URL url, SondeParser parser) {
@@ -254,7 +266,9 @@ public class RadiosondyCollector implements Runnable {
 
     private void downloadArchive() {
         try {
-            URL url = new URL(BASE_URL + "sonde-data/GeoJSON/M/"+sondeName+".json");
+            if(sondeName.length() == 0)
+                return;
+            URL url = new URL(BASE_URL + "sonde-data/GeoJSON/"+sondeName.charAt(0)+"/"+sondeName+".json");
             downloadData(url, new ParseArchive());
         } catch (Exception ignored) {}
     }
@@ -283,4 +297,72 @@ public class RadiosondyCollector implements Runnable {
         synchronized (dataLock) {return start_time;}
     }
 
+    public void stop() {
+        stop = true;
+    }
+
+    private class ParseSondeList implements SondeParser {
+        public void parse(String data) {
+            sonde_entries = new ArrayList<>();
+            try {
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                Document doc = builder.parse(new InputSource(new StringReader("<root>"+data+"</root>")));
+                NodeList items = doc.getElementsByTagName("tr");
+
+                sonde_entries.add("Radiosondy:");
+
+                for (int ii=1; ii<items.getLength(); ii++) {
+                    Node item = items.item(ii);
+                    String name = item.getChildNodes().item(1).getTextContent();
+                    String site = item.getChildNodes().item(19).getTextContent();
+                    System.out.println(name + site);
+                    sonde_entries.add(name + " (" + site + ") " + (sonde_notifications.contains(name) ? "(NOTIF)" : ""));
+                }
+            } catch (Exception e) {
+                sonde_entries.add("Error fetching sonde list");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ParseNotifications implements SondeParser {
+        public void parse(String data) {
+            sonde_entries = new ArrayList<>();
+            try {
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                Document doc = builder.parse(new InputSource(new StringReader("<root>"+data+"</root>")));
+                NodeList items = doc.getElementsByTagName("tr");
+
+                for (int ii=1; ii<items.getLength(); ii++) {
+                    Node item = items.item(ii);
+                    String sonde = item.getChildNodes().item(7).getTextContent();
+                    System.out.println("NOTIF:"+sonde);
+                    sonde_notifications.add(sonde);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void fillMenu(Activity activity, PopupMenu menu) {
+        Thread updateThread = new Thread(()-> {
+            try {
+                URL urln = new URL(BASE_URL + "dyn/get_alerts.php");
+                downloadData(urln, new ParseNotifications());
+                URL url = new URL(BASE_URL + "dyn/get_flying.php");
+                downloadData(url, new ParseSondeList());
+
+                activity.runOnUiThread(()-> {
+                    menu.dismiss();
+                    menu.getMenu().clear();
+                    for (String s : sonde_entries)
+                        menu.getMenu().add(s);
+                    menu.show();
+                });
+
+            } catch (Exception ignored) {}
+        });
+        updateThread.start();
+    }
 }

@@ -9,14 +9,9 @@ import android.location.Location;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
-import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
-import java.util.TimeZone;
 
 import eu.piotro.sondechaser.ui.home.MapUpdater;
 import eu.piotro.sondechaser.ui.slideshow.SlideshowFragment;
@@ -74,24 +69,9 @@ public class DataCollector implements Runnable {
 
     @Override
     public void run() {
-        rs_col = new RadiosondyCollector();
-        sh_col = new SondeHubCollector();
-
-        Thread rs_thread = new Thread(rs_col);
-        Thread sh_thread = new Thread(sh_col);
+        initCollectors();
 
         Thread elapi_thread = new Thread(elapi);
-
-        SharedPreferences sharedPref = rootActivity.getSharedPreferences("eu.piotro.sondechaser.PSET", Context.MODE_PRIVATE);
-        rs_col.setSondeName(sharedPref.getString("rsid",""));
-        sh_col.setSondeName(sharedPref.getString("shid",""));
-
-        lc_col = new LocalServerCollector(sharedPref.getString("lsip",""));
-        Thread lc_thread = new Thread(lc_col);
-
-        rs_thread.start();
-        sh_thread.start();
-        lc_thread.start();
         elapi_thread.start();
 
         try {
@@ -103,6 +83,31 @@ public class DataCollector implements Runnable {
         } catch (InterruptedException ignored) {}
     }
 
+    public void initCollectors() {
+        if(rs_col != null)
+            rs_col.stop();
+        if(sh_col != null)
+            sh_col.stop();
+        if(lc_col != null)
+            lc_col.stop();
+
+        rs_col = new RadiosondyCollector();
+        sh_col = new SondeHubCollector();
+
+        SharedPreferences sharedPref = rootActivity.getSharedPreferences("eu.piotro.sondechaser.PSET", Context.MODE_PRIVATE);
+        rs_col.setSondeName(sharedPref.getString("rsid",""));
+        sh_col.setSondeName(sharedPref.getString("shid",""));
+
+        lc_col = new LocalServerCollector(sharedPref.getString("lsip",""));
+
+        Thread rs_thread = new Thread(rs_col, "rscol");
+        Thread sh_thread = new Thread(sh_col, "shcol");
+        Thread lc_thread = new Thread(lc_col, "lccol");
+
+        rs_thread.start();
+        sh_thread.start();
+        lc_thread.start();
+    }
     void update() {
         // Sonde marker and Position data
         Sonde rs_last_sonde = rs_col.getLastSonde();

@@ -298,7 +298,7 @@ public class MapUpdater {
 
                 if(sh != null) {
                     long sh_data_age = (new Date().getTime() / 1000 - sh.time / 1000);
-                    shLastMarker.setVisible((sh_data_age > 20));
+                    shLastMarker.setVisible((sh_data_age > 120));
                     shLastMarker.setPosition(new GeoPoint(sh.lat, sh.lon));
                     shLastMarker.setTitle("SONDEHUB LAST POSITION\n"+sh.lat + " " + sh.lon + "\n" + sh.alt + "m\n" + new Date(sh.time) + "\n");
                 } else {
