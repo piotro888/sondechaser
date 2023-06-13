@@ -44,6 +44,7 @@ public class LocalServerCollector implements Runnable {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ignored) {}
+            boolean ignored = Thread.interrupted();
         }
     }
 

@@ -96,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         dataCollector.onResume();
+        // DESIGN: Should collectors be paused???? (loosing track)
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dataCollector.onPause();
     }
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

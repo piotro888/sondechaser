@@ -22,6 +22,11 @@ public class DataCollector implements Runnable {
     private SondeHubCollector sh_col;
     private LocalServerCollector lc_col;
 
+    private Thread rs_col_thread;
+    private Thread sh_col_thread;
+    private Thread lc_col_thread;
+    private Thread elapi_thread;
+
     public GpsMyLocationProvider locationProvider;
     public Orientation orientationProvider;
 
@@ -73,7 +78,7 @@ public class DataCollector implements Runnable {
     public void run() {
         initCollectors();
 
-        Thread elapi_thread = new Thread(elapi);
+        elapi_thread = new Thread(elapi);
         elapi_thread.start();
 
         try {
@@ -101,6 +106,8 @@ public class DataCollector implements Runnable {
         if(lc_col != null)
             lc_col.stop();
 
+        refresh();
+
         rs_col = new RadiosondyCollector();
         sh_col = new SondeHubCollector();
 
@@ -110,21 +117,21 @@ public class DataCollector implements Runnable {
 
         lc_col = new LocalServerCollector(sharedPref.getString("lsip",""));
 
-        Thread rs_thread = new Thread(rs_col, "rscol");
-        Thread sh_thread = new Thread(sh_col, "shcol");
-        Thread lc_thread = new Thread(lc_col, "lccol");
+        rs_col_thread = new Thread(rs_col, "rscol");
+        sh_col_thread = new Thread(sh_col, "shcol");
+        lc_col_thread = new Thread(lc_col, "lccol");
 
         showSondeSet = true;
         if(!sharedPref.getString("rsid", "").equals("")) {
-            rs_thread.start();
+            rs_col_thread.start();
             showSondeSet = false;
         }
         if(!sharedPref.getString("shid", "").equals("")) {
-            sh_thread.start();
+            sh_col_thread.start();
             showSondeSet = false;
         }
         if(!sharedPref.getString("lcid", "").equals("")) {
-            lc_thread.start();
+            lc_col_thread.start();
             showSondeSet = false;
         }
     }
@@ -168,7 +175,7 @@ public class DataCollector implements Runnable {
     void updatePosition(Sonde sonde, String source) {
         if (sonde == null) {
             if (mapUpdater != null) {;
-                mapUpdater.updatePosition(null, "?", false, 0,0);
+                mapUpdater.updatePosition(null, "?", false, 0,0, 0);
             }
             return;
         }
@@ -205,7 +212,7 @@ public class DataCollector implements Runnable {
         }
 
         if (mapUpdater != null) {;
-            mapUpdater.updatePosition(sonde, source, vs_ok, posdist, bearing);
+            mapUpdater.updatePosition(sonde, source, vs_ok, posdist, bearing, elapi.alt);
         }
     }
 
@@ -296,8 +303,29 @@ public class DataCollector implements Runnable {
         compassUpdater.update(locationProvider.getLastKnownLocation(), trg, alt, orientationProvider.getAzimuth(), age);
     }
 
+    public void refresh() {
+        if(rs_col_thread != null)
+            rs_col_thread.interrupt();
+        if(sh_col_thread != null)
+            sh_col_thread.interrupt();
+        if(lc_col_thread != null)
+            lc_col_thread.interrupt();
+        if(elapi_thread != null)
+            elapi_thread.interrupt();
+    }
+
     public void onResume() {
         locationProvider.startLocationProvider(null);
+        elapi.pause = false;
+        if (elapi_thread != null)
+            elapi_thread.interrupt();
+    }
+
+    public void onPause() {
+        elapi.pause = true;
+        if (elapi_thread != null)
+            elapi_thread.interrupt();
+        locationProvider.stopLocationProvider();
     }
 
     public void onDestroy() {

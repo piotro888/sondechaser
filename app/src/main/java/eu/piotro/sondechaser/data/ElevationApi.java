@@ -13,32 +13,35 @@ public class ElevationApi implements Runnable {
     public float lon = 0;
     public int alt = 0;
 
+    public volatile boolean pause = false;
+
     @Override
     public void run() {
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
+        while (true) {
+            try {
+                URL url = new URL("https://api.open-meteo.com/v1/elevation?latitude=" + lat + "&longitude=" + lon);
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 try {
-                    URL url = new URL("https://api.open-meteo.com/v1/elevation?latitude=" + lat + "&longitude=" + lon);
-                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                    try {
-                        System.err.println(conn.getResponseCode());
-                        if (conn.getResponseCode() == 200) {
-                            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                            StringBuilder resp = new StringBuilder();
-                            for (String line; (line = br.readLine()) != null; resp.append(line));
-                            String data = resp.toString();
-                            JSONObject json = new JSONObject(data);
-                            alt = json.getJSONArray("elevation").getInt(0);
-                            System.out.println("alt"+alt);
-                        }
-                    } finally {
-                        conn.disconnect();
+                    System.err.println(conn.getResponseCode());
+                    if (conn.getResponseCode() == 200) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuilder resp = new StringBuilder();
+                        for (String line; (line = br.readLine()) != null; resp.append(line));
+                        String data = resp.toString();
+                        JSONObject json = new JSONObject(data);
+                        alt = json.getJSONArray("elevation").getInt(0);
+                        System.out.println("alt"+alt);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } finally {
+                    conn.disconnect();
                 }
-                Thread.sleep(30000);
-             }
-        } catch (InterruptedException ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                while (!Thread.currentThread().isInterrupted())
+                    Thread.sleep(30000);
+            } catch (InterruptedException ignored) {}
+         }
     }
 }

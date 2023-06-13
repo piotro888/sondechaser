@@ -84,6 +84,11 @@ public class HomeFragment extends Fragment {
         v.findViewById(R.id.predbtn).setOnClickListener((_v) -> {
             mapView.getController().animateTo(updater.last_pred);
         });
+        v.findViewById(R.id.refrbtn).setOnClickListener((_v) -> {
+            try {
+                ((MainActivity)getActivity()).dataCollector.refresh();
+            } catch (Exception ignored) {}
+        });
     }
 
     @Override

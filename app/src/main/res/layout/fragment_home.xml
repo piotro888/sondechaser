@@ -40,6 +40,19 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
+            android:id="@+id/refrbtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:cropToPadding="false"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/baseline_refresh_24"
+            app:layout_constraintBottom_toTopOf="@+id/predbtn"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
             android:id="@+id/northbtn"
             style="@android:style/Widget.DeviceDefault.ImageButton"
             android:layout_width="48dp"

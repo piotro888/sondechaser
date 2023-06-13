@@ -73,6 +73,7 @@ public class RadiosondyCollector implements Runnable {
             try {
                 Thread.sleep(15000);
             } catch (InterruptedException ignored) {}
+            boolean ignored = Thread.interrupted();
         }
     }
 

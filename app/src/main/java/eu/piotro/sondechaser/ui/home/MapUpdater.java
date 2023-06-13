@@ -31,7 +31,6 @@ import eu.piotro.sondechaser.data.SondeHubCollector;
 
 public class MapUpdater {
     private HomeFragment homeFragment;
-    private ElevationApi elapi = new ElevationApi();
 
     private Marker sondeMarker;
 
@@ -133,7 +132,7 @@ public class MapUpdater {
         homeFragment.mapView.getOverlays().add(localPathLine);
     }
 
-    public void updatePosition(Sonde sonde, String source, boolean vs_ok, double posdist, double bearing) {
+    public void updatePosition(Sonde sonde, String source, boolean vs_ok, double posdist, double bearing, int elapi_alt) {
         if (sonde == null) {
             homeFragment.requireActivity().runOnUiThread(() -> {
                         ((TextView) homeFragment.requireView().findViewById(R.id.textsid)).setText("N/A");
@@ -177,7 +176,7 @@ public class MapUpdater {
                     ((TextView) homeFragment.requireView().findViewById(R.id.textsid)).setText(sonde.sid == null ? "N/A" : sonde.sid);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textfreq)).setText(sonde.freq == null ? "N/A" : sonde.freq);
                     ((TextView) homeFragment.requireView().findViewById(R.id.textalt)).setText(sonde.alt + " m");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textaog)).setText(sonde.alt - elapi.alt + " m");
+                    ((TextView) homeFragment.requireView().findViewById(R.id.textaog)).setText(sonde.alt - elapi_alt + " m");
                     ((TextView) homeFragment.requireView().findViewById(R.id.textvspeed)).setText(vs_ok ? sonde.vspeed + " m/s" :
                                     ((sonde.vspeed >= 0 ? "+?" : "-?") + " (r: "+Math.abs(sonde.vspeed)+")"));
                     homeFragment.requireView().findViewById(R.id.imagevsarrow).setRotation(180 * ((sonde.vspeed < 0) ? 1 : 0));

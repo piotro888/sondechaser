@@ -53,9 +53,9 @@ public class SondeHubCollector implements Runnable {
         while (!stop) {
             downloadPrediction();
             try {
-            Thread.sleep(30000);
-            } catch (InterruptedException ignored) {
-        }
+                Thread.sleep(30000);
+            } catch (InterruptedException ignored) {}
+            boolean ignored = Thread.interrupted();
         }
     }
 
