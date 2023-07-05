@@ -92,8 +92,9 @@ public class SondeHubCollector implements Runnable {
 
                 JSONObject curr = json.getJSONObject(0);
 
-                sonde.lat = (float)curr.getDouble("latitude");
-                sonde.lon = (float)curr.getDouble("longitude");
+                float lat = (float)curr.getDouble("latitude");
+                float lon = (float)curr.getDouble("longitude");
+                sonde.loc = new GeoPoint(lat, lon);
 
                 sonde.alt = (int)Math.round(curr.getDouble("altitude"));
 
@@ -126,9 +127,9 @@ public class SondeHubCollector implements Runnable {
                     lastSonde = sonde;
                     pred_point = point;
                     prediction = gps;
-                    if (track.size() == 0 || (track.get(track.size()-1).getLatitude() != sonde.lat ||
-                                             track.get(track.size()-1).getLongitude() != sonde.lon))
-                        track.add(new GeoPoint(sonde.lat, sonde.lon));
+                    if (track.size() == 0 || (track.get(track.size()-1).getLatitude() != sonde.loc.getLatitude() ||
+                                             track.get(track.size()-1).getLongitude() != sonde.loc.getLongitude()))
+                        track.add(sonde.loc);
                 }
                 last_decoded = new Date().getTime();
             } catch (Exception e) {

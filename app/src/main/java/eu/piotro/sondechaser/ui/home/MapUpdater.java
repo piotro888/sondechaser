@@ -71,12 +71,14 @@ public class MapUpdater {
         rsPathLine = new Polyline(homeFragment.mapView);
         rsPathLine.setEnabled(true);
         rsPathLine.setColor(Color.CYAN);
+        rsPathLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(rsPathLine);
 
         rsPredLine = new Polyline(homeFragment.mapView);
         rsPredLine.setEnabled(true);
         rsPredLine.setColor(Color.CYAN);
         rsPredLine.setWidth(5f);
+        rsPredLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(rsPredLine);
 
         pred_changed_time = new Date().getTime();
@@ -108,12 +110,14 @@ public class MapUpdater {
         shPathLine = new Polyline(homeFragment.mapView);
         shPathLine.setEnabled(true);
         shPathLine.setColor(Color.MAGENTA);
+        shPathLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(shPathLine);
 
         shPredLine = new Polyline(homeFragment.mapView);
         shPredLine.setEnabled(true);
         shPredLine.setColor(Color.MAGENTA);
         shPredLine.setWidth(5f);
+        shPredLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(shPredLine);
 
         localPredMarker = new Marker(homeFragment.mapView);
@@ -130,6 +134,7 @@ public class MapUpdater {
 
         localPathLine = new Polyline(homeFragment.mapView);
         localPathLine.setColor(Color.RED);
+        localPathLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(localPathLine);
     }
 
@@ -150,7 +155,7 @@ public class MapUpdater {
             return;
         }
 
-        last_pos = new GeoPoint(sonde.lat, sonde.lon);
+        last_pos = sonde.loc;
 
         try {
             long data_age = (new Date().getTime()/1000 - sonde.time/1000);
@@ -190,8 +195,8 @@ public class MapUpdater {
                     boolean hide = (Objects.equals(sondeMarkerSource, "LOCAL") && (data_age > 20))  ||
                             ((Objects.equals(sondeMarkerSource, "SONDEHUB") || Objects.equals(sondeMarkerSource, "RADIOSONDY")) && (data_age > 120));
                         sondeMarker.setVisible(!hide);
-                    sondeMarker.setPosition(new GeoPoint(sonde.lat, sonde.lon));
-                    sondeMarker.setTitle("POSITION\n" + sonde.lat + " " + sonde.lon + "\n" + sonde.alt + "m\n" + new Date(sonde.time) + "\n" + source + "\n");
+                    sondeMarker.setPosition(sonde.loc);
+                    sondeMarker.setTitle("POSITION\n" + (float)sonde.loc.getLatitude() + " " + (float)sonde.loc.getLongitude() + "\n" + sonde.alt + "m\n" + new Date(sonde.time) + "\n" + source + "\n");
 
                     } catch (Exception ignored){}
                 });
@@ -291,8 +296,8 @@ public class MapUpdater {
                 if(rs != null) {
                     long rs_data_age = (new Date().getTime() / 1000 - rs.time / 1000);
                     rsLastMarker.setVisible((rs_data_age > 120));
-                    rsLastMarker.setPosition(new GeoPoint(rs.lat, rs.lon));
-                    rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n"+rs.lat + " " + rs.lon + "\n" + rs.alt + "m\n" + new Date(rs.time) + "\n");
+                    rsLastMarker.setPosition(rs.loc);
+                    rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n"+rs.loc.getLatitude() + " " + rs.loc.getLongitude() + "\n" + rs.alt + "m\n" + new Date(rs.time) + "\n");
                 } else {
                     rsLastMarker.setVisible(false);
                 }
@@ -300,8 +305,8 @@ public class MapUpdater {
                 if(lc != null) {
                     long lc_data_age = (new Date().getTime() / 1000 - lc.time / 1000);
                     localLastMarker.setVisible((lc_data_age > 20));
-                    localLastMarker.setPosition(new GeoPoint(lc.lat, lc.lon));
-                    localLastMarker.setTitle("LOCAL LAST POSITION\n"+lc.lat + " " + lc.lon + "\n" + lc.alt + "m\n" + new Date(lc.time) + "\n");
+                    localLastMarker.setPosition(lc.loc);
+                    localLastMarker.setTitle("LOCAL LAST POSITION\n"+lc.loc.getLatitude() + " " + lc.loc.getLongitude() + "\n" + lc.alt + "m\n" + new Date(lc.time) + "\n");
                 } else {
                     localLastMarker.setVisible(false);
                 }
@@ -309,8 +314,8 @@ public class MapUpdater {
                 if(sh != null) {
                     long sh_data_age = (new Date().getTime() / 1000 - sh.time / 1000);
                     shLastMarker.setVisible((sh_data_age > 120));
-                    shLastMarker.setPosition(new GeoPoint(sh.lat, sh.lon));
-                    shLastMarker.setTitle("SONDEHUB LAST POSITION\n"+sh.lat + " " + sh.lon + "\n" + sh.alt + "m\n" + new Date(sh.time) + "\n");
+                    shLastMarker.setPosition(sh.loc);
+                    shLastMarker.setTitle("SONDEHUB LAST POSITION\n"+sh.loc.getLatitude() + " " + sh.loc.getLongitude() + "\n" + sh.alt + "m\n" + new Date(sh.time) + "\n");
                 } else {
                     shLastMarker.setVisible(false);
                 }

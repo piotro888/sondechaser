@@ -80,9 +80,9 @@ public class LocalServerCollector implements Runnable {
 
                 Sonde sonde = new Sonde();
 
-
-                sonde.lat = (float)json.getDouble("lat");
-                sonde.lon = (float)json.getDouble("lon");
+                float lat = (float)json.getDouble("lat");
+                float lon = (float)json.getDouble("lon");
+                sonde.loc = new GeoPoint(lat, lon);
 
                 sonde.alt = (int)Math.round(json.getDouble("alt"));
 
@@ -104,11 +104,11 @@ public class LocalServerCollector implements Runnable {
 
                 if (lastSonde != null) {
                     float timedev = (sonde.time - lastSonde.time) / 1000.f;
-                    float latdev = (sonde.lat - lastSonde.lat) / timedev;
-                    float londev = (sonde.lon - lastSonde.lon) / timedev;
+                    float latdev = (float)(sonde.loc.getLatitude() - lastSonde.loc.getLatitude()) / timedev;
+                    float londev = (float)(sonde.loc.getLongitude() - lastSonde.loc.getLongitude()) / timedev;
                     float tgalt = terrain_alt;
-                    float nextlat = sonde.lat + (latdev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
-                    float nextlon = sonde.lon + (londev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
+                    float nextlat = (float)sonde.loc.getLatitude() + (latdev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
+                    float nextlon = (float)sonde.loc.getLongitude() + (londev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
 
                     synchronized (dataLock) {
                         pred_point = new Point();
@@ -116,7 +116,7 @@ public class LocalServerCollector implements Runnable {
                         pred_point.alt = (int) tgalt;
                         pred_point.time = 0;
                         prediction = new ArrayList<>();
-                        prediction.add(new GeoPoint(sonde.lat, sonde.lon));
+                        prediction.add(sonde.loc);
                         prediction.add(pred_point.point);
                     }
                 }
@@ -124,7 +124,7 @@ public class LocalServerCollector implements Runnable {
                 synchronized (dataLock) {
                     System.out.println("localupd");
                     lastSonde = sonde;
-                    track.add(new GeoPoint(sonde.lat, sonde.lon));
+                    track.add(sonde.loc);
                 }
                 last_decoded = new Date().getTime();
             } catch (Exception e) {

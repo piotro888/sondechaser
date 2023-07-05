@@ -111,8 +111,9 @@ public class RadiosondyCollector implements Runnable {
 
                 JSONObject curr = feat.getJSONObject(1).getJSONObject("properties");
                 Sonde sonde = new Sonde();
-                sonde.lon = Float.parseFloat(curr.getString("longitude"));
-                sonde.lat = Float.parseFloat(curr.getString("latitude"));
+                float lon = Float.parseFloat(curr.getString("longitude"));
+                float lat = Float.parseFloat(curr.getString("latitude"));
+                sonde.loc = new GeoPoint(lat, lon);
                 sonde.sid = curr.getString("id");
 
                 String alt_str = curr.getString("altitude");
@@ -215,8 +216,9 @@ public class RadiosondyCollector implements Runnable {
 
                 JSONObject curr = feat.getJSONObject(3);
                 Sonde sonde = new Sonde();
-                sonde.lon = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
-                sonde.lat = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1);
+                float lat = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
+                float lon = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1);
+                sonde.loc = new GeoPoint(lat, lon);
 
                 sonde.alt = curr.getJSONObject("geometry").getJSONArray("coordinates").getInt(2);
 

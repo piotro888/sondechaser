@@ -181,7 +181,7 @@ public class DataCollector implements Runnable {
             return;
         }
 
-        elapi.lat = sonde.lat; elapi.lon = sonde.lon;
+        elapi.lat = (float)sonde.loc.getLatitude(); elapi.lon = (float)sonde.loc.getLongitude();
 
         // override unknown data
         boolean vs_ok = !Objects.equals(source, "SONDEHUB");
@@ -205,7 +205,7 @@ public class DataCollector implements Runnable {
         double posdist = Double.NaN;
         double bearing = Double.NaN;
         if (location  != null) {
-            GeoPoint sonde_loc = new GeoPoint(sonde.lat, sonde.lon);
+            GeoPoint sonde_loc = sonde.loc;
             posdist = sonde_loc.distanceToAsDouble(location);
             posdist /= 1000;
 
@@ -266,19 +266,19 @@ public class DataCollector implements Runnable {
         int age = -1;
         if (compassUpdater.getTarget().equals("POSITION LOCAL")) {
             if(lc_col.getLastSonde() != null) {
-                trg = new GeoPoint(lc_col.getLastSonde().lat, lc_col.getLastSonde().lon);
+                trg = lc_col.getLastSonde().loc;
                 alt = lc_col.getLastSonde().alt;
                 age = (int) (new Date().getTime() / 1000 - lc_col.getLastSonde().time / 1000);
             }
         } else if (compassUpdater.getTarget().equals("POSITION RADIOSONDY")) {
             if(rs_col.getLastSonde() != null) {
-                trg = new GeoPoint(rs_col.getLastSonde().lat, rs_col.getLastSonde().lon);
+                trg = rs_col.getLastSonde().loc;
                 alt = rs_col.getLastSonde().alt;
                 age = (int) (new Date().getTime() / 1000 - rs_col.getLastSonde().time / 1000);
             }
         } else if (compassUpdater.getTarget().equals("POSITION SONDEHUB")) {
             if(sh_col.getLastSonde() != null) {
-                trg = new GeoPoint(sh_col.getLastSonde().lat, sh_col.getLastSonde().lon);
+                trg = sh_col.getLastSonde().loc;
                 alt = sh_col.getLastSonde().alt;
                 age = (int) (new Date().getTime() / 1000 - sh_col.getLastSonde().time / 1000);
             }
