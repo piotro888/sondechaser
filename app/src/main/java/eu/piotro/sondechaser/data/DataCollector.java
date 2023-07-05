@@ -130,7 +130,8 @@ public class DataCollector implements Runnable {
             sh_col_thread.start();
             showSondeSet = false;
         }
-        if(!sharedPref.getString("lcid", "").equals("")) {
+
+        if(!sharedPref.getString("lsip", "").equals("")) {
             lc_col_thread.start();
             showSondeSet = false;
         }

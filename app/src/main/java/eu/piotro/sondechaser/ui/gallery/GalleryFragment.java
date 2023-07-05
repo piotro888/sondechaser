@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +48,8 @@ public class GalleryFragment extends Fragment {
 
         ((TextView)v.findViewById(R.id.tfip)).setText(sharedPref.getString("lsip", ""));
 
+        ((CheckBox)v.findViewById(R.id.set_awake)).setChecked(sharedPref.getBoolean("awake", false));
+
         PopupMenu rsPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfrs));
         PopupMenu shPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfsh));
 
@@ -54,9 +58,15 @@ public class GalleryFragment extends Fragment {
             editor.putString("rsid", ((TextView)v.findViewById(R.id.tfrs)).getText().toString());
             editor.putString("shid", ((TextView)v.findViewById(R.id.tfsh)).getText().toString());
             editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
+            editor.putBoolean("awake", ((CheckBox)v.findViewById(R.id.set_awake)).isEnabled());
             editor.apply();
             ((MainActivity)getActivity()).dataCollector.initCollectors();
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+
+            if(((CheckBox)v.findViewById(R.id.set_awake)).isChecked())
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            else
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
 
         v.findViewById(R.id.searchrs).setOnClickListener((view) -> {

@@ -73,11 +73,12 @@
         android:id="@+id/savebtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text=" SAVE"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfip" />
+        app:layout_constraintTop_toBottomOf="@+id/set_awake" />
 
     <ImageButton
         android:id="@+id/searchrs"
@@ -98,4 +99,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tfsh"
         app:layout_constraintTop_toTopOf="@+id/tfsh" />
+
+    <CheckBox
+        android:id="@+id/set_awake"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:text="Keep screen awake"
+        app:layout_constraintStart_toStartOf="@+id/tfip"
+        app:layout_constraintTop_toBottomOf="@+id/tfip" />
 </androidx.constraintlayout.widget.ConstraintLayout>
