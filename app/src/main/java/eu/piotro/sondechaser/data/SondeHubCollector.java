@@ -6,23 +6,19 @@ import android.widget.PopupMenu;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
+import eu.piotro.sondechaser.data.structs.Point;
+import eu.piotro.sondechaser.data.structs.Sonde;
 
 public class SondeHubCollector implements Runnable {
     private static final String BASE_URL = "https://api.v2.sondehub.org/";

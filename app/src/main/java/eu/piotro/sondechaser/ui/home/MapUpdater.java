@@ -1,7 +1,6 @@
 package eu.piotro.sondechaser.ui.home;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,13 +22,11 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
-import eu.piotro.sondechaser.data.ElevationApi;
 import eu.piotro.sondechaser.data.LocalServerCollector;
-import eu.piotro.sondechaser.data.Point;
+import eu.piotro.sondechaser.data.structs.Point;
 import eu.piotro.sondechaser.data.RadiosondyCollector;
-import eu.piotro.sondechaser.data.Sonde;
+import eu.piotro.sondechaser.data.structs.Sonde;
 import eu.piotro.sondechaser.data.SondeHubCollector;
 
 public class MapUpdater {

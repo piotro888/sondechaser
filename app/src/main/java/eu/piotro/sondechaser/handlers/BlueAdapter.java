@@ -1,4 +1,4 @@
-package eu.piotro.sondechaser.data;
+package eu.piotro.sondechaser.handlers;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,7 +21,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BlueAdapter {
     private final Activity rootActivity;

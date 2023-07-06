@@ -1,13 +1,12 @@
 package eu.piotro.sondechaser.data.local;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 import java.util.Date;
 
-import eu.piotro.sondechaser.data.BlueAdapter;
+import eu.piotro.sondechaser.handlers.BlueAdapter;
 import eu.piotro.sondechaser.data.LocalServerCollector;
-import eu.piotro.sondechaser.data.Sonde;
+import eu.piotro.sondechaser.data.structs.Sonde;
 
 public class MySondyDownloader implements LocalServerDownloader {
     private final BlueAdapter blueAdapter;

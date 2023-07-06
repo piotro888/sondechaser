@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="eu.piotro.sondechaser.ui.gallery.GalleryFragment"
+        android:name="eu.piotro.sondechaser.ui.settings.SettingsFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="eu.piotro.sondechaser.ui.slideshow.SlideshowFragment"
+        android:name="eu.piotro.sondechaser.ui.compass.CompassFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_compass" />
 </navigation>

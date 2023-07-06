@@ -1,32 +1,29 @@
-package eu.piotro.sondechaser.ui.slideshow;
+package eu.piotro.sondechaser.ui.compass;
 
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.text.DecimalFormat;
 
 import eu.piotro.sondechaser.MainActivity;
-import eu.piotro.sondechaser.databinding.FragmentSlideshowBinding;
+import eu.piotro.sondechaser.databinding.FragmentCompassBinding;
 
-public class SlideshowFragment extends Fragment {
+public class CompassFragment extends Fragment {
 
-    private FragmentSlideshowBinding binding;
+    private FragmentCompassBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentCompassBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
     }

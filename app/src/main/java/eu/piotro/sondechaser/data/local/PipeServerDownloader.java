@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Date;
 
 import eu.piotro.sondechaser.data.LocalServerCollector;
-import eu.piotro.sondechaser.data.Sonde;
+import eu.piotro.sondechaser.data.structs.Sonde;
 import eu.piotro.sondechaser.data.SondeParser;
 
 public class PipeServerDownloader implements LocalServerDownloader {

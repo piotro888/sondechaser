@@ -1,7 +1,6 @@
 package eu.piotro.sondechaser.data;
 
 import android.app.Activity;
-import android.view.Menu;
 import android.widget.PopupMenu;
 
 import org.json.JSONArray;
@@ -25,6 +24,9 @@ import java.util.TimeZone;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import eu.piotro.sondechaser.data.structs.Point;
+import eu.piotro.sondechaser.data.structs.Sonde;
 
 public class RadiosondyCollector implements Runnable {
     private static final String BASE_URL = "https://radiosondy.info/";

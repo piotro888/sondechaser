@@ -1,7 +1,6 @@
-package eu.piotro.sondechaser.data;
+package eu.piotro.sondechaser.handlers;
 
 import static android.content.Context.SENSOR_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.content.Context;
 import android.hardware.Sensor;

@@ -1,22 +1,16 @@
 package eu.piotro.sondechaser.data;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import eu.piotro.sondechaser.data.local.LocalServerDownloader;
 import eu.piotro.sondechaser.data.local.MySondyDownloader;
 import eu.piotro.sondechaser.data.local.PipeServerDownloader;
+import eu.piotro.sondechaser.data.structs.Point;
+import eu.piotro.sondechaser.data.structs.Sonde;
+import eu.piotro.sondechaser.handlers.BlueAdapter;
 
 public class LocalServerCollector implements Runnable {
 

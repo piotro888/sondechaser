@@ -1,4 +1,4 @@
-package eu.piotro.sondechaser.ui.gallery;
+package eu.piotro.sondechaser.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,23 +18,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.time.Duration;
-
 import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
-import eu.piotro.sondechaser.data.BlueAdapter;
+import eu.piotro.sondechaser.handlers.BlueAdapter;
 import eu.piotro.sondechaser.data.RadiosondyCollector;
 import eu.piotro.sondechaser.data.SondeHubCollector;
-import eu.piotro.sondechaser.databinding.FragmentGalleryBinding;
+import eu.piotro.sondechaser.databinding.FragmentSettingsBinding;
 
-public class GalleryFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
+    private FragmentSettingsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;

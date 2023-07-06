@@ -1,4 +1,4 @@
-package eu.piotro.sondechaser.data;
+package eu.piotro.sondechaser.data.structs;
 
 import org.osmdroid.util.GeoPoint;
 

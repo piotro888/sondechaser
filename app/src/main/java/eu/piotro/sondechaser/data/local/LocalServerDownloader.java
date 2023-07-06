@@ -1,7 +1,7 @@
 package eu.piotro.sondechaser.data.local;
 
 import eu.piotro.sondechaser.data.LocalServerCollector;
-import eu.piotro.sondechaser.data.Sonde;
+import eu.piotro.sondechaser.data.structs.Sonde;
 
 public interface LocalServerDownloader {
     void download();

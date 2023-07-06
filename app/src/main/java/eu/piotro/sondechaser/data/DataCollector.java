@@ -13,8 +13,12 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import java.util.Date;
 import java.util.Objects;
 
+import eu.piotro.sondechaser.data.structs.Point;
+import eu.piotro.sondechaser.data.structs.Sonde;
+import eu.piotro.sondechaser.handlers.BlueAdapter;
+import eu.piotro.sondechaser.handlers.Orientation;
 import eu.piotro.sondechaser.ui.home.MapUpdater;
-import eu.piotro.sondechaser.ui.slideshow.SlideshowFragment;
+import eu.piotro.sondechaser.ui.compass.CompassFragment;
 
 
 public class DataCollector implements Runnable {
@@ -38,7 +42,7 @@ public class DataCollector implements Runnable {
     private final Activity rootActivity;
 
     private MapUpdater mapUpdater = null;
-    private SlideshowFragment compassUpdater = null;
+    private CompassFragment compassUpdater = null;
     private boolean stop = false;
 
     private BlueAdapter blueAdapter;
@@ -62,7 +66,7 @@ public class DataCollector implements Runnable {
         this.mapUpdater = mapUpdater;
     }
 
-    public void setCompassUpdater(SlideshowFragment compassUpdater) {
+    public void setCompassUpdater(CompassFragment compassUpdater) {
         this.compassUpdater = compassUpdater;
     }
 
