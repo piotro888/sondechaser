@@ -1,6 +1,8 @@
 package eu.piotro.sondechaser.ui.home;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -56,13 +58,16 @@ public class MapUpdater {
     public GeoPoint last_pos = new GeoPoint(51.0, 17.0);
     public GeoPoint last_pred = new GeoPoint(51.0, 17.0);
 
-    public MapUpdater(HomeFragment homeFragment) {
+    private final View view;
+
+    public MapUpdater(HomeFragment homeFragment, View v, Context c) {
         this.homeFragment = homeFragment;
+        view = v;
 
         sondeMarker = new Marker(homeFragment.mapView);
         sondeMarker.setVisible(false);
         sondeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        Drawable ballon = ContextCompat.getDrawable(homeFragment.getActivity(), R.drawable.baloon);
+        Drawable ballon = ContextCompat.getDrawable(c, R.drawable.baloon);
         Bitmap b = ((BitmapDrawable)ballon).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, b.getWidth()/5, b.getHeight()/5, false);
         sondeMarker.setIcon(new BitmapDrawable(homeFragment.getResources(), bitmapResized));
@@ -85,7 +90,7 @@ public class MapUpdater {
 
         rsPredMarker = new Marker(homeFragment.mapView);
         rsPredMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        Bitmap rstgb = ((BitmapDrawable)ContextCompat.getDrawable(homeFragment.getActivity(), R.drawable.target_rs)).getBitmap();
+        Bitmap rstgb = ((BitmapDrawable)ContextCompat.getDrawable(c, R.drawable.target_rs)).getBitmap();
         rstgb = Bitmap.createScaledBitmap(rstgb, rstgb.getWidth()/4, rstgb.getHeight()/4, false);
         rsPredMarker.setIcon(new BitmapDrawable(homeFragment.getResources(), rstgb));
         homeFragment.mapView.getOverlays().add(rsPredMarker);
@@ -139,17 +144,18 @@ public class MapUpdater {
     }
 
     public void updatePosition(Sonde sonde, String source, boolean vs_ok, double posdist, double bearing, int elapi_alt) {
+        homeFragment.requireActivity().runOnUiThread(()->view.findViewById(R.id.tvwait).setVisibility(View.GONE));
         if (sonde == null) {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textsid)).setText("N/A");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textfreq)).setText("N/A");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textalt)).setText("NO DATA");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textaog)).setText("N/A m");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textvspeed)).setText("N/A m/s");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setText("N/A s");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textposdist)).setText("N/A km");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textposhdg)).setText("N/A");
-                        ((TextView) homeFragment.requireView().findViewById(R.id.textpossrc)).setText("N/A");
+                        ((TextView) view.findViewById(R.id.textsid)).setText("N/A");
+                        ((TextView) view.findViewById(R.id.textfreq)).setText("N/A");
+                        ((TextView) view.findViewById(R.id.textalt)).setText("NO DATA");
+                        ((TextView) view.findViewById(R.id.textaog)).setText("N/A m");
+                        ((TextView) view.findViewById(R.id.textvspeed)).setText("N/A m/s");
+                        ((TextView) view.findViewById(R.id.textposage)).setText("N/A s");
+                        ((TextView) view.findViewById(R.id.textposdist)).setText("N/A km");
+                        ((TextView) view.findViewById(R.id.textposhdg)).setText("N/A");
+                        ((TextView) view.findViewById(R.id.textpossrc)).setText("N/A");
                          sondeMarker.setVisible(false);
             });
             return;
@@ -179,18 +185,18 @@ public class MapUpdater {
             try {
                 homeFragment.requireActivity().runOnUiThread(() -> {
                     try {
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textsid)).setText(sonde.sid == null ? "N/A" : sonde.sid);
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textfreq)).setText(sonde.freq == null ? "N/A" : sonde.freq);
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textalt)).setText(sonde.alt + " m");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textaog)).setText(sonde.alt - elapi_alt + " m");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textvspeed)).setText(vs_ok ? sonde.vspeed + " m/s" :
+                    ((TextView) view.findViewById(R.id.textsid)).setText(sonde.sid == null ? "N/A" : sonde.sid);
+                    ((TextView) view.findViewById(R.id.textfreq)).setText(sonde.freq == null ? "N/A" : sonde.freq);
+                    ((TextView) view.findViewById(R.id.textalt)).setText(sonde.alt + " m");
+                    ((TextView) view.findViewById(R.id.textaog)).setText(sonde.alt - elapi_alt + " m");
+                    ((TextView) view.findViewById(R.id.textvspeed)).setText(vs_ok ? sonde.vspeed + " m/s" :
                                     ((sonde.vspeed >= 0 ? "+?" : "-?") + " (r: "+Math.abs(sonde.vspeed)+")"));
-                    homeFragment.requireView().findViewById(R.id.imagevsarrow).setRotation(180 * ((sonde.vspeed < 0) ? 1 : 0));
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setText(data_age + "s");
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textposage)).setTextColor(data_age > 120 ? Color.RED : ResourcesCompat.getColor(homeFragment.getResources(), android.R.color.secondary_text_dark, null));
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textposdist)).setText(final_posdist_km);
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textposhdg)).setText(final_bearing_str);
-                    ((TextView) homeFragment.requireView().findViewById(R.id.textpossrc)).setText("(" + source + ")");
+                    view.findViewById(R.id.imagevsarrow).setRotation(180 * ((sonde.vspeed < 0) ? 1 : 0));
+                    ((TextView) view.findViewById(R.id.textposage)).setText(data_age + "s");
+                    ((TextView) view.findViewById(R.id.textposage)).setTextColor(data_age > 120 ? Color.RED : ResourcesCompat.getColor(homeFragment.getResources(), android.R.color.secondary_text_dark, null));
+                    ((TextView) view.findViewById(R.id.textposdist)).setText(final_posdist_km);
+                    ((TextView) view.findViewById(R.id.textposhdg)).setText(final_bearing_str);
+                    ((TextView) view.findViewById(R.id.textpossrc)).setText("(" + source + ")");
 
                     boolean hide = (Objects.equals(sondeMarkerSource, "LOCAL") && (data_age > 20))  ||
                             ((Objects.equals(sondeMarkerSource, "SONDEHUB") || Objects.equals(sondeMarkerSource, "RADIOSONDY")) && (data_age > 120));
@@ -254,12 +260,12 @@ public class MapUpdater {
         try{
             homeFragment.requireActivity().runOnUiThread(() -> {
                 try {
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpostime)).setText(start_elapsed == 0 ? "N/A s" : time_elapsed);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpredtime)).setText(point == null ? "N/A s" : str_to_end);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpreddist)).setText(final_posdist_km);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpredhdg)).setText(final_bearing_str);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpredage)).setText(data_age != -1 ? data_age+"s" : "N/A");
-                ((TextView) homeFragment.requireView().findViewById(R.id.textpredsrc)).setText(" ("+source+")");
+                ((TextView) view.findViewById(R.id.textpostime)).setText(start_elapsed == 0 ? "N/A s" : time_elapsed);
+                ((TextView) view.findViewById(R.id.textpredtime)).setText(point == null ? "N/A s" : str_to_end);
+                ((TextView) view.findViewById(R.id.textpreddist)).setText(final_posdist_km);
+                ((TextView) view.findViewById(R.id.textpredhdg)).setText(final_bearing_str);
+                ((TextView) view.findViewById(R.id.textpredage)).setText(data_age != -1 ? data_age+"s" : "N/A");
+                ((TextView) view.findViewById(R.id.textpredsrc)).setText(" ("+source+")");
                 } catch (Exception ignored){}
             });
         } catch (Exception ignored){}
@@ -326,9 +332,9 @@ public class MapUpdater {
     public void updateStatus(int rs_color, int sh_color, int lc_color) {
         try {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                ((TextView) homeFragment.requireView().findViewById(R.id.textstatl)).setTextColor(lc_color);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textstats)).setTextColor(sh_color);
-                ((TextView) homeFragment.requireView().findViewById(R.id.textstatr)).setTextColor(rs_color);
+                ((TextView) view.findViewById(R.id.textstatl)).setTextColor(lc_color);
+                ((TextView) view.findViewById(R.id.textstats)).setTextColor(sh_color);
+                ((TextView) view.findViewById(R.id.textstatr)).setTextColor(rs_color);
             });
         }catch (Exception ignored){}
     }

@@ -120,6 +120,21 @@
             app:layout_constraintStart_toStartOf="@+id/map"
             app:layout_constraintTop_toTopOf="@+id/map" />
 
+        <TextView
+            android:id="@+id/tvwait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Loading..."
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintTop_toTopOf="@+id/map"
+            app:layout_constraintVertical_bias="0.3" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

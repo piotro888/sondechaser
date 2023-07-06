@@ -36,9 +36,16 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
+        v.findViewById(R.id.tvwait).setVisibility(View.VISIBLE);
+//        Thread init_thread = new Thread(this::initView);
+//        init_thread.start();
+        initView();
+    }
+
+    private void initView() {
+        View v = view;
         mapView = v.findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -67,7 +74,7 @@ public class HomeFragment extends Fragment {
                 }
         );
 
-        updater = new MapUpdater(this);
+        updater = new MapUpdater(this, v, getActivity());
 
         v.findViewById(R.id.northbtn).setOnClickListener((_v) -> mapView.setMapOrientation(0));
         v.findViewById(R.id.locbtn).setOnClickListener((_v) -> {
@@ -86,21 +93,30 @@ public class HomeFragment extends Fragment {
         });
         v.findViewById(R.id.refrbtn).setOnClickListener((_v) -> {
             try {
-                ((MainActivity)getActivity()).dataCollector.refresh();
-            } catch (Exception ignored) {}
+                while (getActivity() == null) {}
+                ((MainActivity) getActivity()).dataCollector.refresh();
+            } catch (Exception ignored) {
+            }
         });
+        onResume();
     }
 
     @Override
     public void onPause() {
         ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(null);
-        mapView.onPause();
+        if (mapView != null)
+            mapView.onPause();
+        if (view != null)
+            view.findViewById(R.id.tvwait).setVisibility(View.VISIBLE);
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        mapView.onResume();
+        if (view != null)
+            view.findViewById(R.id.tvwait).setVisibility(View.VISIBLE);
+        if (mapView != null)
+            mapView.onResume();
         ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(updater);
         super.onResume();
     }
