@@ -27,7 +27,7 @@ public class LocalServerCollector implements Runnable {
     private final Object dataLock = new Object();
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
-    private Status status;
+    private Status status = Status.RED;
 
     private long last_decoded;
 
@@ -54,9 +54,11 @@ public class LocalServerCollector implements Runnable {
     private PipeServerDownloader pipeDownloader;
     private MySondyDownloader mySondyDownloader;
 
-    private void disable() {
+    public void disable() {
         // pipe downloader does not need disabling
-        mySondyDownloader.disable();
+        if (mySondyDownloader != null)
+            mySondyDownloader.disable();
+
         source = Mode.NONE;
     }
     public void setPipeSource(String ip) {
@@ -98,6 +100,7 @@ public class LocalServerCollector implements Runnable {
             status = Status.RED;
             return;
         }
+
         LocalServerDownloader downloader = (source == Mode.PIPE ? pipeDownloader : mySondyDownloader);
         downloader.download();
 
@@ -113,6 +116,8 @@ public class LocalServerCollector implements Runnable {
         Sonde sonde = lastSonde;
         {
             Sonde lastSonde = prevSonde; // shadow
+            if (sonde == null)
+                return;
             if (sonde.time > new Date().getTime() && sonde.time - new Date().getTime() < 600_000) {
                 // Sonde clocks tend to shift in time
                 sonde.time = new Date().getTime();

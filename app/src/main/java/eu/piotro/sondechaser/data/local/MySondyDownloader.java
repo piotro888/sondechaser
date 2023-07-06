@@ -1,5 +1,8 @@
 package eu.piotro.sondechaser.data.local;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
+
 import java.util.Date;
 
 import eu.piotro.sondechaser.data.BlueAdapter;
@@ -32,27 +35,54 @@ public class MySondyDownloader implements LocalServerDownloader {
 
     @Override
     public void disable() {
-        if(bt_thread == null)
-            return;
-        bt_thread.interrupt();
+        System.out.println("disable mysondy");
+        if (bt_thread != null) {
+            bt_runnable.stop();
+            bt_thread.interrupt();
+
+            bt_runnable = null;
+            bt_thread = null;
+        }
         blueAdapter.close();
     }
 
     @Override
     public void download() {
-        if (!blueAdapter.isConnected())
-            mStatus = LocalServerCollector.Status.RED;
-        else
-            mStatus = LocalServerCollector.Status.YELLOW;
+        try {
+            if (!blueAdapter.isConnected())
+                mStatus = LocalServerCollector.Status.RED;
+            else if (new Date().getTime() - last_decoded < 10_000)
+                mStatus = LocalServerCollector.Status.GREEN;
+            else
+                mStatus = LocalServerCollector.Status.YELLOW;
 
-        String line = bt_runnable.getLine();
+            String line = bt_runnable.getLine();
 
-        if (line == null)
-            return;
+            if (line == null || line.length() == 0)
+                return;
 
-        System.out.println("PARSE" + line);
+            if (line.charAt(0) != '1') // 1 prefix is position available
+                return;
 
-        last_decoded = new Date().getTime();
+            String[] el = line.split("/");
+            float lat = Float.parseFloat(el[4]);
+            float lon = Float.parseFloat(el[5]);
+            float alt = Float.parseFloat(el[6]);
+            float vs = Float.parseFloat(el[7]);
+
+            Sonde sonde = new Sonde();
+            sonde.loc = new GeoPoint(lat, lon);
+            sonde.alt = (int) Math.round(alt);
+            sonde.vspeed = vs;
+            sonde.time = new Date().getTime();
+            lastSonde = sonde;
+
+            System.out.println("BtParse"+sonde.time);
+
+            last_decoded = new Date().getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

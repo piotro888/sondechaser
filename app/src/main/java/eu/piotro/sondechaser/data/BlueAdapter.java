@@ -38,6 +38,8 @@ public class BlueAdapter {
     private String deviceAddress = null;
     private int type = 2;
 
+    private boolean failed = true;
+
     private static final UUID WELL_KNOWN_SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public BlueAdapter(Activity rootActivity) {
@@ -104,6 +106,7 @@ public class BlueAdapter {
 
     @SuppressLint("MissingPermission")
     public void connectSocket() {
+        failed = true;
         if (!permissionCheck())
             return;
         try {
@@ -119,12 +122,17 @@ public class BlueAdapter {
     }
 
     public String readLine() {
-        if (bluetoothSocket == null || reader == null || !bluetoothSocket.isConnected())
+        if (bluetoothSocket == null || reader == null || !bluetoothSocket.isConnected()) {
+            failed = true;
             return null;
+        }
 
         try {
-            return reader.readLine();
+            String line = reader.readLine();
+            failed = false; // fail also before first line is received - device should constantly report
+            return line;
         } catch (IOException e) {
+            failed = true;
             e.printStackTrace();
         }
         return null;
@@ -163,11 +171,12 @@ public class BlueAdapter {
     public class BlockedReaderThread implements Runnable {
         private String lastLine;
         private boolean new_line = false;
-
+        private boolean stop = false;
         private Object lock = new Object();
+
         @Override
         public void run() {
-            while (!Thread.interrupted()) { // kill thread when interruptd
+            while (!stop) {
                 System.out.println("BTHREAD: loop ");
                 String line = readLine(); // this fails in all cases (device offline, closed transmission error)
                 if (line == null) {
@@ -200,21 +209,26 @@ public class BlueAdapter {
             }
             return line;
         }
+
+        public void stop() {
+            stop = true;
+        }
     }
 
     public void close() {
         try {
             reader.close();
             writer.close();
-        } catch (IOException ignored) {}
+        } catch (Exception ignored) {}
 
         try {
             bluetoothSocket.close();
-        } catch (IOException ignored) {}
+        } catch (Exception ignored) {}
 
         bluetoothSocket = null;
         reader = null;
         writer = null;
+        System.out.println("ba: close");
     }
 
     private BlockedReaderThread thread = null;
@@ -228,7 +242,7 @@ public class BlueAdapter {
     public boolean isConnected() {
         if (bluetoothSocket == null)
             return false;
-        return bluetoothSocket.isConnected();
+        return bluetoothSocket.isConnected() && !failed;
     }
 
     // NOTE: whaaaaaaaaa? Disabling BT on phone does not dissconect BtSocket, and it is *even* able to reconnect and continue working

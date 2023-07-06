@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,15 +53,34 @@ public class GalleryFragment extends Fragment {
 
         ((CheckBox)v.findViewById(R.id.set_awake)).setChecked(sharedPref.getBoolean("awake", false));
 
+        ((TextView)v.findViewById(R.id.sonde_addr)).setText(sharedPref.getString("bt_addr", ""));
+        String sel = sharedPref.getString("bt_model", "1: RS41");
+        int seln = Integer.parseInt(sel.substring(0, sel.indexOf(":")));
+        ((Spinner)v.findViewById(R.id.bt_probe)).setSelection(seln-1);
+        ((TextView)v.findViewById(R.id.sonde_freq)).setText(sharedPref.getString("bt_freq", ""));
+
+        ((Spinner)v.findViewById(R.id.local_spinner)).setSelection(sharedPref.getInt("local_src", 0));
+
         PopupMenu rsPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfrs));
         PopupMenu shPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfsh));
+        PopupMenu btPopupMenu = new PopupMenu(context, v.findViewById(R.id.sonde_addr));
 
         v.findViewById(R.id.savebtn).setOnClickListener((view) -> {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("rsid", ((TextView)v.findViewById(R.id.tfrs)).getText().toString());
             editor.putString("shid", ((TextView)v.findViewById(R.id.tfsh)).getText().toString());
-            editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
             editor.putBoolean("awake", ((CheckBox)v.findViewById(R.id.set_awake)).isEnabled());
+
+            editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
+
+            editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
+
+            editor.putString("bt_addr", ((TextView)v.findViewById(R.id.sonde_addr)).getText().toString());
+            editor.putString("bt_model", ((Spinner)v.findViewById(R.id.bt_probe)).getSelectedItem().toString());
+            editor.putString("bt_freq", ((TextView)v.findViewById(R.id.sonde_freq)).getText().toString());
+
+            editor.putInt("local_src", ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItemPosition());
+
             editor.apply();
             ((MainActivity)getActivity()).dataCollector.initCollectors();
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
@@ -86,6 +107,12 @@ public class GalleryFragment extends Fragment {
             shPopupMenu.show();
         });
 
+        v.findViewById(R.id.searchbt).setOnClickListener((view) -> {
+            btPopupMenu.getMenu().clear();
+            new BlueAdapter(getActivity()).fillMenu(getActivity(), btPopupMenu);
+            btPopupMenu.show();
+        });
+
         rsPopupMenu.setOnMenuItemClickListener((item)->{
             String entry = item.getTitle().toString();
             if(entry.indexOf('(') == -1)
@@ -103,9 +130,40 @@ public class GalleryFragment extends Fragment {
             return true;
         });
 
-//        PopupMenu btPopupMenu = new PopupMenu(context, v.findViewById(R.id.set_awake));
-//        new BlueAdapter(getActivity()).fillMenu(getActivity(), btPopupMenu);
-//        btPopupMenu.show();
+        btPopupMenu.setOnMenuItemClickListener((item) -> {
+            String entry = item.getTitle().toString();
+            if(!entry.contains("("))
+                return false;
+            ((TextView)v.findViewById(R.id.sonde_addr)).setText(entry);
+            return true;
+        });
+
+        ((Spinner)v.findViewById(R.id.local_spinner)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                showSelSettings(v);
+            }
+            public void onNothingSelected(AdapterView<?> parentView) {}
+        });
+        showSelSettings(v);
+    }
+
+    private void showSelSettings(View v) {
+        boolean pipe = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("PIPE");
+        boolean bt = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("MYS");
+
+        int pv = (pipe ? View.VISIBLE : View.GONE);
+        int bv = (bt ? View.VISIBLE : View.GONE);
+
+        v.findViewById(R.id.tfip).setVisibility(pv);
+        v.findViewById(R.id.textView4).setVisibility(pv);
+
+        v.findViewById(R.id.bt_probe).setVisibility(bv);
+        v.findViewById(R.id.sonde_addr).setVisibility(bv);
+        v.findViewById(R.id.sonde_freq).setVisibility(bv);
+        v.findViewById(R.id.textView11).setVisibility(bv);
+        v.findViewById(R.id.textView16).setVisibility(bv);
+        v.findViewById(R.id.textView19).setVisibility(bv);
+        v.findViewById(R.id.searchbt).setVisibility(bv);
     }
 
     @Override

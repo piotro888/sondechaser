@@ -20,4 +20,18 @@
         <item>PREDICTION SONDEHUB</item>
     </string-array>
 
+    <string-array name="local_set">
+        <item>NONE</item>
+        <item>PIPE SERVER (IP)</item>
+        <item>MYSONDY (BLUETOOTH)</item>
+    </string-array>
+
+    <string-array name="bt_probe">
+        <item>1: RS41</item>
+        <item>2: M20</item>
+        <item>3: M10</item>
+        <item>4: PILOT</item>
+        <item>5: DFM</item>
+    </string-array>
+
 </resources>

@@ -41,7 +41,7 @@ public class DataCollector implements Runnable {
     private SlideshowFragment compassUpdater = null;
     private boolean stop = false;
 
-    private BlueAdapter ba;
+    private BlueAdapter blueAdapter;
 
     public boolean showSondeSet = false;
 
@@ -55,8 +55,7 @@ public class DataCollector implements Runnable {
 
         orientationProvider = new Orientation(rootActivity);
 
-        ba = new BlueAdapter(rootActivity);
-        ba.setDeviceAddress("aaa (98:F4:AB:6D:2B:5E)");
+        blueAdapter = new BlueAdapter(rootActivity);
     }
 
     public void setMapUpdater(MapUpdater mapUpdater) {
@@ -122,7 +121,17 @@ public class DataCollector implements Runnable {
 
         lc_col = new LocalServerCollector();
 
-        lc_col.setPipeSource(sharedPref.getString("lsip",""));
+        int src_sel = sharedPref.getInt("local_src", 0);
+        if (src_sel == 0)
+            lc_col.disable();
+        else if(src_sel == 1)
+            lc_col.setPipeSource(sharedPref.getString("lsip",""));
+        else if (src_sel == 2) {
+            blueAdapter.setDeviceAddress(sharedPref.getString("bt_addr", "nodev (98:F4:AB:6D:2B:5E)"));
+            blueAdapter.setType(sharedPref.getString("bt_model", "1: RS41"));
+            blueAdapter.setFrequency(sharedPref.getString("bt_freq", "403.000"));
+            lc_col.setMySondySource(blueAdapter);
+        }
 
         rs_col_thread = new Thread(rs_col, "rscol");
         sh_col_thread = new Thread(sh_col, "shcol");

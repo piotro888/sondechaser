@@ -24,13 +24,15 @@
         android:id="@+id/tfip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="45dp"
         android:ems="10"
         android:hint="192.168.164.175:4069"
         android:inputType="text"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfsh" />
+        app:layout_constraintTop_toBottomOf="@+id/local_spinner" />
 
     <EditText
         android:id="@+id/tfsh"
@@ -40,6 +42,7 @@
         android:ems="10"
         android:hint="203-2-03826"
         android:inputType="text"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,19 +69,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Local Server IP:PORT"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/tfip"
         app:layout_constraintStart_toStartOf="@+id/tfsh" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Local Server Source"
+        app:layout_constraintBottom_toTopOf="@+id/local_spinner"
+        app:layout_constraintStart_toStartOf="@+id/local_spinner" />
 
     <Button
         android:id="@+id/savebtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:text=" SAVE"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/set_awake" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/searchrs"
@@ -100,13 +112,99 @@
         app:layout_constraintStart_toEndOf="@+id/tfsh"
         app:layout_constraintTop_toTopOf="@+id/tfsh" />
 
+    <ImageButton
+        android:id="@+id/searchbt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_search_24"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/sonde_addr"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sonde_addr"
+        app:layout_constraintTop_toTopOf="@+id/sonde_addr" />
+
     <CheckBox
         android:id="@+id/set_awake"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
         android:text="Keep screen awake"
-        app:layout_constraintStart_toStartOf="@+id/tfip"
-        app:layout_constraintTop_toBottomOf="@+id/tfip" />
+        app:layout_constraintBottom_toTopOf="@+id/savebtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/local_spinner"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="46dp"
+        android:entries="@array/local_set"
+        app:layout_constraintEnd_toEndOf="@+id/tfsh"
+        app:layout_constraintStart_toStartOf="@+id/tfsh"
+        app:layout_constraintTop_toBottomOf="@+id/tfsh" />
+
+    <Spinner
+        android:id="@+id/bt_probe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:entries="@array/bt_probe"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/sonde_addr"
+        app:layout_constraintStart_toStartOf="@+id/sonde_addr"
+        app:layout_constraintTop_toBottomOf="@+id/sonde_addr" />
+
+    <EditText
+        android:id="@+id/sonde_addr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:hint="Tap search button"
+        android:inputType="text"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/tfsh"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tfsh"
+        app:layout_constraintTop_toBottomOf="@+id/local_spinner" />
+
+    <EditText
+        android:id="@+id/sonde_freq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="403.000"
+        android:inputType="text"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/tfsh"
+        app:layout_constraintStart_toStartOf="@+id/tfsh"
+        app:layout_constraintTop_toBottomOf="@+id/bt_probe" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sonde Frequency"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/sonde_freq"
+        app:layout_constraintStart_toStartOf="@+id/sonde_freq" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Bluetooth device"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/sonde_addr"
+        app:layout_constraintStart_toStartOf="@+id/sonde_addr" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Sonde Type"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/bt_probe"
+        app:layout_constraintStart_toStartOf="@+id/sonde_addr" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
