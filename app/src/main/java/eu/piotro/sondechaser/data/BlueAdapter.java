@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BlueAdapter {
     private final Activity rootActivity;
@@ -159,11 +160,14 @@ public class BlueAdapter {
         });
     }
 
-    class BlockedReaderThread implements Runnable {
+    public class BlockedReaderThread implements Runnable {
         private String lastLine;
+        private boolean new_line = false;
+
+        private Object lock = new Object();
         @Override
         public void run() {
-            for (;;) {
+            while (!Thread.interrupted()) { // kill thread when interruptd
                 System.out.println("BTHREAD: loop ");
                 String line = readLine(); // this fails in all cases (device offline, closed transmission error)
                 if (line == null) {
@@ -173,16 +177,44 @@ public class BlueAdapter {
                 } else {
                     System.out.println("BTHREAD: received " + line);
                 }
-                lastLine = line;
+
+                synchronized (lock) {
+                    lastLine = line;
+                    new_line = true;
+                }
 
                 try { Thread.sleep(200); } catch (InterruptedException ignored) {}
             }
+            System.out.println("BTHREAD: exit");
         }
 
         public String getLine() {
-            return lastLine;
+            String line;
+            synchronized (lock) {
+                if (new_line) {
+                    new_line = false;
+                    line = lastLine;
+                } else {
+                    line = null;
+                }
+            }
+            return line;
         }
+    }
 
+    public void close() {
+        try {
+            reader.close();
+            writer.close();
+        } catch (IOException ignored) {}
+
+        try {
+            bluetoothSocket.close();
+        } catch (IOException ignored) {}
+
+        bluetoothSocket = null;
+        reader = null;
+        writer = null;
     }
 
     private BlockedReaderThread thread = null;

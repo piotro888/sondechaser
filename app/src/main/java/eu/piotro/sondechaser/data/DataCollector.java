@@ -41,6 +41,8 @@ public class DataCollector implements Runnable {
     private SlideshowFragment compassUpdater = null;
     private boolean stop = false;
 
+    private BlueAdapter ba;
+
     public boolean showSondeSet = false;
 
     public DataCollector(Activity rootActivity) {
@@ -52,6 +54,9 @@ public class DataCollector implements Runnable {
         locationProvider.startLocationProvider(null);
 
         orientationProvider = new Orientation(rootActivity);
+
+        ba = new BlueAdapter(rootActivity);
+        ba.setDeviceAddress("aaa (98:F4:AB:6D:2B:5E)");
     }
 
     public void setMapUpdater(MapUpdater mapUpdater) {
@@ -115,7 +120,9 @@ public class DataCollector implements Runnable {
         rs_col.setSondeName(sharedPref.getString("rsid",""));
         sh_col.setSondeName(sharedPref.getString("shid",""));
 
-        lc_col = new LocalServerCollector(sharedPref.getString("lsip",""));
+        lc_col = new LocalServerCollector();
+
+        lc_col.setPipeSource(sharedPref.getString("lsip",""));
 
         rs_col_thread = new Thread(rs_col, "rscol");
         sh_col_thread = new Thread(sh_col, "shcol");
@@ -141,7 +148,6 @@ public class DataCollector implements Runnable {
         Sonde rs_last_sonde = rs_col.getLastSonde();
         Sonde lc_last_sonde = lc_col.getLastSonde();
         Sonde sh_last_sonde = sh_col.getLastSonde();
-
 
         if (lc_last_sonde != null && (rs_last_sonde == null || rs_last_sonde.time <= lc_last_sonde.time))
             updatePosition(lc_last_sonde, "LOCAL");
@@ -244,12 +250,8 @@ public class DataCollector implements Runnable {
 
     void updateStatus() {
         long time = new Date().getTime();
-        int lc = Color.RED;
-        if (time - lc_col.last_success < 10000) {
-            lc = Color.YELLOW;
-            if (time - lc_col.last_decoded < 20000)
-                lc = Color.GREEN;
-        }
+        int lc = lc_col.getStatus() == LocalServerCollector.Status.RED ? Color.RED :
+                (lc_col.getStatus() ==  LocalServerCollector.Status.YELLOW ? Color.YELLOW : Color.GREEN);
 
         int scol = (time - sh_col.last_decoded < 60000) ? Color.GREEN : Color.RED;
         int rcol = (time - rs_col.last_decoded < 60000) ? Color.GREEN : Color.RED;

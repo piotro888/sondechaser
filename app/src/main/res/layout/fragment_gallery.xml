@@ -108,4 +108,5 @@
         android:text="Keep screen awake"
         app:layout_constraintStart_toStartOf="@+id/tfip"
         app:layout_constraintTop_toBottomOf="@+id/tfip" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

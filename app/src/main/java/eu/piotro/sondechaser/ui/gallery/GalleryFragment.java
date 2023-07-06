@@ -20,6 +20,7 @@ import java.time.Duration;
 
 import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
+import eu.piotro.sondechaser.data.BlueAdapter;
 import eu.piotro.sondechaser.data.RadiosondyCollector;
 import eu.piotro.sondechaser.data.SondeHubCollector;
 import eu.piotro.sondechaser.databinding.FragmentGalleryBinding;
@@ -101,6 +102,10 @@ public class GalleryFragment extends Fragment {
             ((TextView)v.findViewById(R.id.tfsh)).setText(entry);
             return true;
         });
+
+//        PopupMenu btPopupMenu = new PopupMenu(context, v.findViewById(R.id.set_awake));
+//        new BlueAdapter(getActivity()).fillMenu(getActivity(), btPopupMenu);
+//        btPopupMenu.show();
     }
 
     @Override

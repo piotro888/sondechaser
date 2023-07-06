@@ -225,7 +225,7 @@ public class RadiosondyCollector implements Runnable {
                 //sonde.vspeed = 0;
 
                 String time_str = curr.getJSONObject("properties").getString("description");
-                System.err.println(time_str.substring(11, 11+19));
+                System.err.println("Radiosondy" + time_str.substring(11, 11+19));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                 sonde.time = sdf.parse(time_str.substring(11, 11+19)).getTime();
@@ -239,7 +239,6 @@ public class RadiosondyCollector implements Runnable {
                 for (int i=path.length()-1; i>=0; i-=10) {
                     JSONArray entry = path.getJSONArray(i);
                     gps.add(new GeoPoint(entry.getDouble(1), entry.getDouble(0)));
-                    System.out.println(entry.getDouble(0));
                 }
                 synchronized (dataLock) {
                     track = gps;

@@ -14,131 +14,128 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import eu.piotro.sondechaser.data.local.LocalServerDownloader;
+import eu.piotro.sondechaser.data.local.MySondyDownloader;
+import eu.piotro.sondechaser.data.local.PipeServerDownloader;
+
 public class LocalServerCollector implements Runnable {
-    private final String BASE_URL;
+
     private Sonde lastSonde;
+    private Sonde prevSonde;
+
     private ArrayList<GeoPoint> track;
     private final Object dataLock = new Object();
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
-    public long last_success;
-    public long last_decoded;
+    private Status status;
+
+    private long last_decoded;
 
     private int terrain_alt = 0;
 
     private volatile boolean stop = false;
 
-    public LocalServerCollector(String ip) {
-        BASE_URL = "http://" + ip + "/";
+    public LocalServerCollector() {}
+
+    private enum Mode {
+        NONE,
+        PIPE,
+        MYSONDY,
     }
+
+    public enum Status {
+        RED,
+        YELLOW,
+        GREEN,
+    }
+
+    private Mode source;
+
+    private PipeServerDownloader pipeDownloader;
+    private MySondyDownloader mySondyDownloader;
+
+    private void disable() {
+        // pipe downloader does not need disabling
+        mySondyDownloader.disable();
+        source = Mode.NONE;
+    }
+    public void setPipeSource(String ip) {
+        disable();
+        pipeDownloader = new PipeServerDownloader(ip);
+        source = Mode.PIPE;
+    }
+
+    public void setMySondySource(BlueAdapter blueAdapter) {
+        disable();
+        mySondyDownloader = new MySondyDownloader(blueAdapter);
+        mySondyDownloader.enable();
+        source = Mode.MYSONDY;
+    }
+
     @Override
     public void run() {
         lastSonde = null;
         track = new ArrayList<>();
         pred_point = null;
         prediction = new ArrayList<>();
-        last_success = 0;
+        last_decoded = 0;
+        status = Status.RED;
 
         while (!stop) {
-            download();
+            getData();
+            generatePrediction();
+
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ignored) {}
             boolean ignored = Thread.interrupted();
         }
+        disable();
     }
 
-    private void downloadData(URL url, SondeParser parser) {
-        try {
-            System.err.println(url);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            try {
-                System.err.println(conn.getResponseCode());
-                if (conn.getResponseCode() == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder resp = new StringBuilder();
-                    for (String line; (line = br.readLine()) != null; resp.append(line));
-                    parser.parse(resp.toString());
-                    last_success = new Date().getTime();
-                }
+    private void getData() {
+        if (source == Mode.NONE) {
+            status = Status.RED;
+            return;
+        }
+        LocalServerDownloader downloader = (source == Mode.PIPE ? pipeDownloader : mySondyDownloader);
+        downloader.download();
 
-            } finally {
-                conn.disconnect();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        prevSonde = lastSonde;
+        synchronized (dataLock) {
+            lastSonde = downloader.getLastSonde();
+            last_decoded = downloader.getLastDecoded();
+            status = downloader.getStatus();
         }
     }
 
-    private class Parser implements SondeParser {
-        public void parse(String data) {
-            try {
-                JSONObject json = new JSONObject(data);
-                if (json.length() == 0 || !json.getBoolean("valid")) {
-                    return;
-                }
-
-                Sonde sonde = new Sonde();
-
-                float lat = (float)json.getDouble("lat");
-                float lon = (float)json.getDouble("lon");
-                sonde.loc = new GeoPoint(lat, lon);
-
-                sonde.alt = (int)Math.round(json.getDouble("alt"));
-
-                sonde.time = json.getLong("time")*1000;
-
-                sonde.vspeed = (float)json.getDouble("vs");
-
-                sonde.freq = null;
-                sonde.sid = null;
-
-                System.out.println(sonde.alt);
-                if (lastSonde != null && sonde.time == lastSonde.time)
-                    return;
-
-                if(sonde.time > new Date().getTime() && sonde.time - new Date().getTime() < 600_000) {
-                    // Sonde clocks tend to shift in time
-                    sonde.time = new Date().getTime();
-                }
-
-                if (lastSonde != null) {
-                    float timedev = (sonde.time - lastSonde.time) / 1000.f;
-                    float latdev = (float)(sonde.loc.getLatitude() - lastSonde.loc.getLatitude()) / timedev;
-                    float londev = (float)(sonde.loc.getLongitude() - lastSonde.loc.getLongitude()) / timedev;
-                    float tgalt = terrain_alt;
-                    float nextlat = (float)sonde.loc.getLatitude() + (latdev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
-                    float nextlon = (float)sonde.loc.getLongitude() + (londev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
-
-                    synchronized (dataLock) {
-                        pred_point = new Point();
-                        pred_point.point = new GeoPoint(nextlat, nextlon);
-                        pred_point.alt = (int) tgalt;
-                        pred_point.time = 0;
-                        prediction = new ArrayList<>();
-                        prediction.add(sonde.loc);
-                        prediction.add(pred_point.point);
-                    }
-                }
+    private void generatePrediction() {
+        Sonde sonde = lastSonde;
+        {
+            Sonde lastSonde = prevSonde; // shadow
+            if (sonde.time > new Date().getTime() && sonde.time - new Date().getTime() < 600_000) {
+                // Sonde clocks tend to shift in time
+                sonde.time = new Date().getTime();
+            }
+            if (lastSonde != null) {
+                float timedev = (sonde.time - lastSonde.time) / 1000.f;
+                float latdev = (float) (sonde.loc.getLatitude() - lastSonde.loc.getLatitude()) / timedev;
+                float londev = (float) (sonde.loc.getLongitude() - lastSonde.loc.getLongitude()) / timedev;
+                float tgalt = terrain_alt;
+                float nextlat = (float) sonde.loc.getLatitude() + (latdev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
+                float nextlon = (float) sonde.loc.getLongitude() + (londev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
 
                 synchronized (dataLock) {
-                    System.out.println("localupd");
-                    lastSonde = sonde;
-                    track.add(sonde.loc);
+                    pred_point = new Point();
+                    pred_point.point = new GeoPoint(nextlat, nextlon);
+                    pred_point.alt = (int) tgalt;
+                    pred_point.time = 0;
+                    prediction = new ArrayList<>();
+                    prediction.add(sonde.loc);
+                    prediction.add(pred_point.point);
                 }
-                last_decoded = new Date().getTime();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
-    }
-
-
-    private void download() {
-        try {
-            URL url = new URL(BASE_URL + "get");
-            downloadData(url, new Parser());
-        } catch (Exception ignored) {}
     }
 
     public Sonde getLastSonde() {
@@ -159,6 +156,14 @@ public class LocalServerCollector implements Runnable {
 
     public Point getPredictionPoint() {
         synchronized (dataLock) {return pred_point;}
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public long getLastDecoded() {
+        return last_decoded;
     }
 
     public void updateTerrainAlt(int alt) {
