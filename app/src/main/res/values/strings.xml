@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">SondeChaser</string>
-    <string name="nav_header_subtitle">v0.3 [BETA] by Piotr Węgrzyn SP6PI</string>
+    <string name="nav_header_subtitle">by Piotr Węgrzyn SP6PI</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

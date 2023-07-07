@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.nav_version);
+        navUsername.setText("v"+BuildConfig.VERSION_NAME + BuildConfig.VERSION_SUFF + " " + getString(R.string.nav_header_subtitle));
 
         // Map configurations
         Configuration.getInstance().setUserAgentValue(getApplicationContext().getPackageName());
@@ -67,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                         LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
-
         Thread dataCollectorThread = new Thread(dataCollector);
         dataCollectorThread.start();
     }

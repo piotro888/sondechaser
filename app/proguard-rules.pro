@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Disable logging in release
+-assumenosideeffects class System {
+    public static *** out.println(...);
+    public static *** err.println(...);
+}
