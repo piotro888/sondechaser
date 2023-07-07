@@ -76,7 +76,7 @@ public class MySondyDownloader implements LocalServerDownloader {
             sonde.time = new Date().getTime();
             lastSonde = sonde;
 
-            System.out.println("BtParse"+sonde.time);
+            //System.out.println("BtParse"+sonde.time);
 
             last_decoded = new Date().getTime();
         } catch (Exception e) {

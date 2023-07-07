@@ -15,9 +15,10 @@ import eu.piotro.sondechaser.handlers.BlueAdapter;
 public class LocalServerCollector implements Runnable {
 
     private Sonde lastSonde;
-    private Sonde prevSonde;
 
     private ArrayList<GeoPoint> track;
+
+    private ArrayList<Point> points;
     private final Object dataLock = new Object();
     private ArrayList<GeoPoint> prediction;
     private Point pred_point;
@@ -70,8 +71,10 @@ public class LocalServerCollector implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("lcstart");
         lastSonde = null;
         track = new ArrayList<>();
+        points = new ArrayList<>();
         pred_point = null;
         prediction = new ArrayList<>();
         last_decoded = 0;
@@ -82,11 +85,12 @@ public class LocalServerCollector implements Runnable {
             generatePrediction();
 
             try {
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException ignored) {}
             boolean ignored = Thread.interrupted();
         }
         disable();
+        System.out.println("lcexit");
     }
 
     private void getData() {
@@ -98,41 +102,89 @@ public class LocalServerCollector implements Runnable {
         LocalServerDownloader downloader = (source == Mode.PIPE ? pipeDownloader : mySondyDownloader);
         downloader.download();
 
-        prevSonde = lastSonde;
+        Sonde last_sonde = downloader.getLastSonde();
+        Point sonde_point = new Point();
+        if (last_sonde != null) {
+            sonde_point.point = last_sonde.loc;
+            sonde_point.time = last_sonde.time;
+            sonde_point.alt = last_sonde.alt;
+            sonde_point = fixCoords(sonde_point);
+        }
+
         synchronized (dataLock) {
-            lastSonde = downloader.getLastSonde();
-            last_decoded = downloader.getLastDecoded();
             status = downloader.getStatus();
+
+            if (last_sonde != null && sonde_point != null) {
+                if (lastSonde == null || last_sonde.loc.getLongitude() != lastSonde.loc.getLongitude() || last_sonde.loc.getLatitude() != lastSonde.loc.getLatitude()) {
+                    System.out.println("Local update");
+                    track.add(sonde_point.point);
+                    points.add(sonde_point);
+                }
+
+                lastSonde = last_sonde;
+                last_decoded = downloader.getLastDecoded();
+            }
         }
     }
 
-    private void generatePrediction() {
-        Sonde sonde = lastSonde;
-        {
-            Sonde lastSonde = prevSonde; // shadow
-            if (sonde == null)
-                return;
-            if (sonde.time > new Date().getTime() && sonde.time - new Date().getTime() < 600_000) {
-                // Sonde clocks tend to shift in time
-                sonde.time = new Date().getTime();
-            }
-            if (lastSonde != null) {
-                float timedev = (sonde.time - lastSonde.time) / 1000.f;
-                float latdev = (float) (sonde.loc.getLatitude() - lastSonde.loc.getLatitude()) / timedev;
-                float londev = (float) (sonde.loc.getLongitude() - lastSonde.loc.getLongitude()) / timedev;
-                float tgalt = terrain_alt;
-                float nextlat = (float) sonde.loc.getLatitude() + (latdev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
-                float nextlon = (float) sonde.loc.getLongitude() + (londev * ((sonde.alt - tgalt) / (sonde.vspeed * -1)));
 
-                synchronized (dataLock) {
-                    pred_point = new Point();
-                    pred_point.point = new GeoPoint(nextlat, nextlon);
-                    pred_point.alt = (int) tgalt;
-                    pred_point.time = 0;
-                    prediction = new ArrayList<>();
-                    prediction.add(sonde.loc);
-                    prediction.add(pred_point.point);
-                }
+    private Point fixCoords(Point point) {
+        if (Math.abs(point.point.getLatitude()) > 85.051128)
+            return null;
+
+        if (point.point.getLongitude() < 0)
+            point.point.setLongitude(point.point.getLongitude() + 360.0);
+        if (point.point.getLongitude() > 360.0)
+            point.point.setLongitude(point.point.getLongitude() - 360.0);
+
+        if (point.point.getLongitude() < 0 || point.point.getLongitude() > 360)
+            return null;
+
+        return point;
+    }
+
+    private void generatePrediction() {
+        if (points.size() < 2) {
+            synchronized (dataLock) {
+                pred_point = null;
+                prediction.clear();
+            }
+            return;
+        }
+
+        Point last_point = points.get(points.size()-1);
+
+        Point interpolating_element = points.get(track.size()-2);
+        final int INTERPOLATION_TIME = 10_000;
+        for (int i=points.size()-2; i >= 0; i--) {
+            if (last_point.time - points.get(i).time > INTERPOLATION_TIME)
+                break; // get the oldest element, but newer than interpolation time.
+            interpolating_element = points.get(i);
+        }
+
+        float time_diff = (last_point.time - interpolating_element.time) / 1000.f;
+        float lat_dev =  (float)(last_point.point.getLatitude() - interpolating_element.point.getLatitude()) /  time_diff;
+        float lon_dev =  (float)(last_point.point.getLongitude() - interpolating_element.point.getLongitude()) / time_diff;
+        float avg_vspeed = (last_point.alt - interpolating_element.alt) / time_diff;
+        float time_to_ground = (last_point.alt - terrain_alt) / (avg_vspeed * -1);
+
+//        if (time_to_ground < 0)
+//            return null;
+
+        float new_lat = (float)last_point.point.getLatitude() + (lat_dev*time_to_ground);
+        float new_lon = (float)last_point.point.getLongitude() + (lon_dev*time_to_ground);
+
+        Point pred = new Point();
+        pred.point = new GeoPoint(new_lat, new_lon);
+        pred.time = new Date().getTime() + (long)(time_to_ground * 1000.f);
+        pred.alt = terrain_alt;
+
+        synchronized (dataLock) {
+            pred_point = fixCoords(pred);
+            if(pred_point != null) {
+                prediction = new ArrayList<>();
+                prediction.add(last_point.point);
+                prediction.add(pred_point.point);
             }
         }
     }

@@ -107,6 +107,7 @@ public class DataCollector implements Runnable {
     }
 
     public void initCollectors() {
+        System.out.println("INITCOLSRC");
         if(rs_col != null)
             rs_col.stop();
         if(sh_col != null)
@@ -126,6 +127,7 @@ public class DataCollector implements Runnable {
         lc_col = new LocalServerCollector();
 
         int src_sel = sharedPref.getInt("local_src", 0);
+        System.out.println("SRC" + src_sel);
         if (src_sel == 0)
             lc_col.disable();
         else if(src_sel == 1)
@@ -146,12 +148,13 @@ public class DataCollector implements Runnable {
             rs_col_thread.start();
             showSondeSet = false;
         }
+
         if(!sharedPref.getString("shid", "").equals("")) {
             sh_col_thread.start();
             showSondeSet = false;
         }
 
-        if(!sharedPref.getString("lsip", "").equals("")) {
+        if(src_sel != 0) {
             lc_col_thread.start();
             showSondeSet = false;
         }
@@ -265,7 +268,6 @@ public class DataCollector implements Runnable {
         long time = new Date().getTime();
         int lc = lc_col.getStatus() == LocalServerCollector.Status.RED ? Color.RED :
                 (lc_col.getStatus() ==  LocalServerCollector.Status.YELLOW ? Color.YELLOW : Color.GREEN);
-
         int scol = (time - sh_col.last_decoded < 60000) ? Color.GREEN : Color.RED;
         int rcol = (time - rs_col.last_decoded < 60000) ? Color.GREEN : Color.RED;
 

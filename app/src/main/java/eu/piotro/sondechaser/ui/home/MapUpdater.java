@@ -49,9 +49,6 @@ public class MapUpdater {
     private Polyline localPathLine;
     private String sondeMarkerSource = "";
 
-    private long pred_changed_time;
-    private GeoPoint prev_pred_point;
-
     public GeoPoint last_pos = new GeoPoint(51.0, 17.0);
     public GeoPoint last_pred = new GeoPoint(51.0, 17.0);
 
@@ -82,8 +79,6 @@ public class MapUpdater {
         rsPredLine.setWidth(5f);
         rsPredLine.setInfoWindow(null);
         homeFragment.mapView.getOverlays().add(rsPredLine);
-
-        pred_changed_time = new Date().getTime();
 
         rsPredMarker = new Marker(homeFragment.mapView);
         rsPredMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
@@ -218,7 +213,10 @@ public class MapUpdater {
                     shPathLine.setPoints(sh_col.getSondeTrack());
                     shPredLine.setPoints(sh_col.getPrediction());
                     localPathLine.setPoints(lc_col.getSondeTrack());
-                }catch (NullPointerException ignored){}
+                } catch (Exception e) {
+                    if (!(e instanceof NullPointerException))
+                        e.printStackTrace();
+                }
             });
         }catch (Exception ignored){}
     }
@@ -271,24 +269,26 @@ public class MapUpdater {
     public void updatePredictionMarkers(Point rs_pred, Point sh_pred, Point lc_pred) {
         try{
             homeFragment.requireActivity().runOnUiThread(() -> {
-                rsPredMarker.setVisible(rs_pred != null);
-                if (rs_pred != null) {
-                    rsPredMarker.setPosition(rs_pred.point);
-                    rsPredMarker.setTitle("PREDICTION\n"+rs_pred.point.getLatitude() + "\n" + rs_pred.point.getLongitude() + "\n" + rs_pred.alt + "m\n" + new Date(rs_pred.time) + "\nRADIOSONDY");
-                }
+                try{
+                    rsPredMarker.setVisible(rs_pred != null);
+                    if (rs_pred != null) {
+                        rsPredMarker.setPosition(rs_pred.point);
+                        rsPredMarker.setTitle("PREDICTION\n"+rs_pred.point.getLatitude() + "\n" + rs_pred.point.getLongitude() + "\n" + rs_pred.alt + "m\n" + new Date(rs_pred.time) + "\nRADIOSONDY");
+                    }
 
-                shPredMarker.setVisible(sh_pred != null);
-                if (sh_pred != null) {
-                    shPredMarker.setPosition(sh_pred.point);
-                    shPredMarker.setTitle("PREDICTION\n"+sh_pred.point.getLatitude() + "\n" + sh_pred.point.getLongitude() + "\n" + sh_pred.alt + "m\n" + new Date(sh_pred.time) + "\nSONDEHUB");
-                }
+                    shPredMarker.setVisible(sh_pred != null);
+                    if (sh_pred != null) {
+                        shPredMarker.setPosition(sh_pred.point);
+                        shPredMarker.setTitle("PREDICTION\n"+sh_pred.point.getLatitude() + "\n" + sh_pred.point.getLongitude() + "\n" + sh_pred.alt + "m\n" + new Date(sh_pred.time) + "\nSONDEHUB");
+                    }
 
-                if(lc_pred != null && lc_pred.alt < 10000) {
-                    localPredMarker.setVisible(true);
-                    localPredMarker.setPosition(lc_pred.point);
-                    localPredMarker.setTitle("LOCAL PREDICTION INTERPOLATION\n"+lc_pred.point.getLatitude() + "\n" + lc_pred.point.getLongitude() + "\n" + lc_pred.alt);
-                } else
-                    localPredMarker.setVisible(false);
+                    if(lc_pred != null && lc_pred.alt < 10000) {
+                        localPredMarker.setVisible(true);
+                        localPredMarker.setPosition(lc_pred.point);
+                        localPredMarker.setTitle("LOCAL PREDICTION INTERPOLATION\n"+lc_pred.point.getLatitude() + "\n" + lc_pred.point.getLongitude() + "\n" + lc_pred.alt);
+                    } else
+                        localPredMarker.setVisible(false);
+                } catch (Exception e){e.printStackTrace();} // setting point position can be dangerous
             });
         } catch (Exception ignored){}
     }
@@ -296,32 +296,34 @@ public class MapUpdater {
     public void updateLastMarkers(Sonde rs, Sonde sh, Sonde lc) {
         try {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                if(rs != null) {
-                    long rs_data_age = (new Date().getTime() / 1000 - rs.time / 1000);
-                    rsLastMarker.setVisible((rs_data_age > 120));
-                    rsLastMarker.setPosition(rs.loc);
-                    rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n"+rs.loc.getLatitude() + " " + rs.loc.getLongitude() + "\n" + rs.alt + "m\n" + new Date(rs.time) + "\n");
-                } else {
-                    rsLastMarker.setVisible(false);
-                }
+                try {
+                    if (rs != null) {
+                        long rs_data_age = (new Date().getTime() / 1000 - rs.time / 1000);
+                        rsLastMarker.setVisible((rs_data_age > 120));
+                        rsLastMarker.setPosition(rs.loc);
+                        rsLastMarker.setTitle("RADIOSONDY LAST POSITION\n" + rs.loc.getLatitude() + " " + rs.loc.getLongitude() + "\n" + rs.alt + "m\n" + new Date(rs.time) + "\n");
+                    } else {
+                        rsLastMarker.setVisible(false);
+                    }
 
-                if(lc != null) {
-                    long lc_data_age = (new Date().getTime() / 1000 - lc.time / 1000);
-                    localLastMarker.setVisible((lc_data_age > 20));
-                    localLastMarker.setPosition(lc.loc);
-                    localLastMarker.setTitle("LOCAL LAST POSITION\n"+lc.loc.getLatitude() + " " + lc.loc.getLongitude() + "\n" + lc.alt + "m\n" + new Date(lc.time) + "\n");
-                } else {
-                    localLastMarker.setVisible(false);
-                }
+                    if (lc != null) {
+                        long lc_data_age = (new Date().getTime() / 1000 - lc.time / 1000);
+                        localLastMarker.setVisible((lc_data_age > 20));
+                        localLastMarker.setPosition(lc.loc);
+                        localLastMarker.setTitle("LOCAL LAST POSITION\n" + lc.loc.getLatitude() + " " + lc.loc.getLongitude() + "\n" + lc.alt + "m\n" + new Date(lc.time) + "\n");
+                    } else {
+                        localLastMarker.setVisible(false);
+                    }
 
-                if(sh != null) {
-                    long sh_data_age = (new Date().getTime() / 1000 - sh.time / 1000);
-                    shLastMarker.setVisible((sh_data_age > 120));
-                    shLastMarker.setPosition(sh.loc);
-                    shLastMarker.setTitle("SONDEHUB LAST POSITION\n"+sh.loc.getLatitude() + " " + sh.loc.getLongitude() + "\n" + sh.alt + "m\n" + new Date(sh.time) + "\n");
-                } else {
-                    shLastMarker.setVisible(false);
-                }
+                    if (sh != null) {
+                        long sh_data_age = (new Date().getTime() / 1000 - sh.time / 1000);
+                        shLastMarker.setVisible((sh_data_age > 120));
+                        shLastMarker.setPosition(sh.loc);
+                        shLastMarker.setTitle("SONDEHUB LAST POSITION\n" + sh.loc.getLatitude() + " " + sh.loc.getLongitude() + "\n" + sh.alt + "m\n" + new Date(sh.time) + "\n");
+                    } else {
+                        shLastMarker.setVisible(false);
+                    }
+                } catch (Exception e) {e.printStackTrace();}
             });
         } catch (Exception ignored){}
     }
