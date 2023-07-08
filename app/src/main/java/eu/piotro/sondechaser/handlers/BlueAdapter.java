@@ -141,7 +141,7 @@ public class BlueAdapter {
         if (bluetoothSocket == null || reader == null)
             return;
 
-        String cmd = "o{f="+freqString+"/tipo="+type+"}";
+        String cmd = "o{f="+freqString+"/tipo="+type+"}o";
         writer.println(cmd);
         writer.flush(); // <<<
     }
