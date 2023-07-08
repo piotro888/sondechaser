@@ -35,6 +35,7 @@ public class MySondyDownloader implements LocalServerDownloader {
     @Override
     public void disable() {
         System.out.println("disable mysondy");
+        // close is handled by bt thread
         if (bt_thread != null) {
             bt_runnable.stop();
             bt_thread.interrupt();
@@ -42,7 +43,6 @@ public class MySondyDownloader implements LocalServerDownloader {
             bt_runnable = null;
             bt_thread = null;
         }
-        blueAdapter.close();
     }
 
     @Override

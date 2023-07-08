@@ -32,12 +32,11 @@ public class BlueAdapter {
     private PrintWriter writer;
 
     private String freqString = "403.000";
-
-    private BluetoothDevice device = null;
-    private String deviceAddress = null;
+    private String deviceAddress = "";
     private int type = 2;
 
     private boolean failed = true;
+    private boolean device_invalidate = false;
 
     private static final UUID WELL_KNOWN_SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -64,8 +63,8 @@ public class BlueAdapter {
         if (menuEntry.contains("("))
             deviceAddress = menuEntry.substring(menuEntry.lastIndexOf('(')+1, menuEntry.length()-1);
 
-        close();
-        device = null;
+        // everthing needs a restart, but closing here crashes the app
+        device_invalidate = true;
     }
     public void setFrequency(String freq) {
         freqString = freq.replace(',', '.');
@@ -77,57 +76,55 @@ public class BlueAdapter {
     }
 
     @SuppressLint("MissingPermission")
-    private void connectDevice() {
+    private boolean createDevice() {
         if (!permissionCheck())
-            return;
+            return false;
 
-        if (device == null) {
-            if (deviceAddress != null) {
-                device = this.bluetoothAdapter.getRemoteDevice(deviceAddress);
-            }
-            if(device == null)
-                return;
-        }
+        failed = true;
+
+        close();
+
+        if(deviceAddress == null)
+            return false;
+
+        BluetoothDevice device = this.bluetoothAdapter.getRemoteDevice(deviceAddress);
+
+        if(device == null)
+            return false;
 
         try {
-            if (bluetoothSocket != null)
-                bluetoothSocket.close();
-
-            try {
-                bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(WELL_KNOWN_SERIAL_UUID);
-            } catch (IOException e) {
-                // TODO: Replace with status text, or ignore for now in settings is probably enough
-                //rootActivity.runOnUiThread(()-> Toast.makeText(rootActivity, "Bluetooth is disabled", Toast.LENGTH_LONG).show() );
-                try { Thread.sleep(10000); } catch (InterruptedException ignored) {}
-            }
+            bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(WELL_KNOWN_SERIAL_UUID);
+            device_invalidate = false;
+            return true;
         } catch (IOException e) {
-            bluetoothSocket = null;
-            e.printStackTrace();
+            // TODO: Replace with status text, or ignore for now in settings is probably enough
+            //rootActivity.runOnUiThread(()-> Toast.makeText(rootActivity, "Bluetooth is disabled", Toast.LENGTH_LONG).show() );
+            try { Thread.sleep(10000); } catch (InterruptedException ignored) {}
         }
+        return false;
     }
 
     @SuppressLint("MissingPermission")
-    public void connectSocket() {
-        failed = true;
+    public void connectDevice() {
         if (!permissionCheck())
             return;
+
+        failed = true;
+
+        if(bluetoothSocket.isConnected())
+            close();
+
         try {
-            if (bluetoothSocket != null) {
-                bluetoothSocket.connect(); // this fails when device is offline - just silently ignore it
-                reader = new BufferedReader(new InputStreamReader(bluetoothSocket.getInputStream()));
-                writer = new PrintWriter(new OutputStreamWriter(bluetoothSocket.getOutputStream()));
-                updateFreq();
-            } else {
-                connectDevice();
-            }
+            bluetoothSocket.connect(); // this fails when device is offline - just silently ignore it
+            reader = new BufferedReader(new InputStreamReader(bluetoothSocket.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(bluetoothSocket.getOutputStream()));
+            updateFreq();
         } catch (Exception ignored) {}
     }
 
     public String readLine() {
-        if (bluetoothSocket == null || reader == null || !bluetoothSocket.isConnected()) {
-            failed = true;
+        if(reader == null)
             return null;
-        }
 
         try {
             String line = reader.readLine();
@@ -182,12 +179,17 @@ public class BlueAdapter {
             new_line = false;
 
             System.out.println("BTHREAD: start ");
-            while (!stop) {
+
+            while (!stop && !createDevice()) {}
+
+            System.out.println("BTHREAD: device created");
+
+            while (!stop && !device_invalidate) {
                 System.out.println("BTHREAD: loop ");
                 String line = readLine(); // this fails in all cases (device offline, closed transmission error)
                 if (line == null) {
                     System.out.println("BTTHREAD: Reconnect");
-                    connectSocket();
+                    connectDevice();
                     try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
                 } else {
                     System.out.println("BTHREAD: received " + line);
@@ -201,6 +203,8 @@ public class BlueAdapter {
                 try { Thread.sleep(200); } catch (InterruptedException ignored) {}
             }
             System.out.println("BTHREAD: exit");
+
+            close();
         }
 
         public String getLine() {
@@ -222,19 +226,13 @@ public class BlueAdapter {
     }
 
     public void close() {
-        try {
-            reader.close();
+        if(reader != null)
+            try { reader.close(); } catch (IOException ignored) {}
+        if (writer != null)
             writer.close();
-        } catch (Exception ignored) {}
-
-        try {
-            bluetoothSocket.close();
-        } catch (Exception ignored) {}
-
-        bluetoothSocket = null;
-        reader = null;
-        writer = null;
-        System.out.println("ba: close");
+        if (bluetoothSocket != null) {
+            try { bluetoothSocket.close(); } catch (IOException ignored) {}
+        }
     }
 
     private BlockedReaderThread thread = null;

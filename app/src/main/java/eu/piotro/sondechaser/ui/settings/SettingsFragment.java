@@ -67,12 +67,10 @@ public class SettingsFragment extends Fragment {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("rsid", ((TextView)v.findViewById(R.id.tfrs)).getText().toString());
             editor.putString("shid", ((TextView)v.findViewById(R.id.tfsh)).getText().toString());
-            editor.putBoolean("awake", ((CheckBox)v.findViewById(R.id.set_awake)).isEnabled());
+            editor.putBoolean("awake", ((CheckBox)v.findViewById(R.id.set_awake)).isChecked());
 
             editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
-
-            editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
-
+            
             editor.putString("bt_addr", ((TextView)v.findViewById(R.id.sonde_addr)).getText().toString());
             editor.putString("bt_model", ((Spinner)v.findViewById(R.id.bt_probe)).getSelectedItem().toString());
             editor.putString("bt_freq", ((TextView)v.findViewById(R.id.sonde_freq)).getText().toString());
