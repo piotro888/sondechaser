@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO: Main activity get destroyed on task-switch.
+        //  It probably should be there (but where?), we need further separation of tasks and UI (could help loading times also)
+        //  It should be created in app constructor (notification about running in backgroud?) and non re-crated on UI crate!!!!
+
+        // main activy is destroyed and then recreated - kill all other threads on destroy
         dataCollector = new DataCollector(this);
 
         super.onCreate(savedInstanceState);

@@ -98,22 +98,23 @@ public class DataCollector implements Runnable {
 
                 if((++it)%10 == 0 && toGeoPoint(locationProvider.getLastKnownLocation()) == null) {
                     rootActivity.runOnUiThread(() -> {
-                        System.out.println("rs");
-                        System.out.println((locationProvider.startLocationProvider(null)));
+                        locationProvider.startLocationProvider(null);
                     });
                 }
             }
         } catch (InterruptedException ignored) {}
     }
-
-    public void initCollectors() {
-        System.out.println("INITCOLSRC");
+    private void stopCollectors() {
         if(rs_col != null)
             rs_col.stop();
         if(sh_col != null)
             sh_col.stop();
         if(lc_col != null)
             lc_col.stop();
+    }
+    public void initCollectors() {
+        System.out.println("INITCOLSRC"+lc_col);
+        stopCollectors();
 
         refresh();
 
@@ -348,5 +349,6 @@ public class DataCollector implements Runnable {
         mapUpdater = null;
         compassUpdater = null;
         stop = true;
+        stopCollectors();
     }
 }

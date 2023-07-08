@@ -25,7 +25,6 @@ public class MySondyDownloader implements LocalServerDownloader {
 
     @Override
     public void enable() {
-        disable();
         // Address and mode should be configured already in passed object
         bt_runnable = blueAdapter.getRunnable();
         bt_thread = new Thread(bt_runnable);

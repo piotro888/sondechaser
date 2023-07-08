@@ -89,7 +89,6 @@ public class LocalServerCollector implements Runnable {
             } catch (InterruptedException ignored) {}
             boolean ignored = Thread.interrupted();
         }
-        disable();
         System.out.println("lcexit");
     }
 
@@ -223,5 +222,6 @@ public class LocalServerCollector implements Runnable {
 
     public void stop() {
         stop = true;
+        disable();
     }
 }

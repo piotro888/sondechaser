@@ -95,6 +95,7 @@ public class BlueAdapter {
         try {
             bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(WELL_KNOWN_SERIAL_UUID);
             device_invalidate = false;
+            System.out.println("BT Device created");
             return true;
         } catch (IOException e) {
             // TODO: Replace with status text, or ignore for now in settings is probably enough
@@ -105,21 +106,21 @@ public class BlueAdapter {
     }
 
     @SuppressLint("MissingPermission")
-    public void connectDevice() {
+    public boolean connectDevice() {
         if (!permissionCheck())
-            return;
+            return false;
 
         failed = true;
 
-        if(bluetoothSocket.isConnected())
-            close();
-
         try {
             bluetoothSocket.connect(); // this fails when device is offline - just silently ignore it
+            // or when there is some error and we need to recreate socket
             reader = new BufferedReader(new InputStreamReader(bluetoothSocket.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(bluetoothSocket.getOutputStream()));
             updateFreq();
-        } catch (Exception ignored) {}
+            return true;
+        } catch (Exception e) {e.printStackTrace();}
+        return false;
     }
 
     public String readLine() {
@@ -189,7 +190,10 @@ public class BlueAdapter {
                 String line = readLine(); // this fails in all cases (device offline, closed transmission error)
                 if (line == null) {
                     System.out.println("BTTHREAD: Reconnect");
-                    connectDevice();
+                    if(!connectDevice()) {
+                        close();
+                        createDevice();
+                    }
                     try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
                 } else {
                     System.out.println("BTHREAD: received " + line);
