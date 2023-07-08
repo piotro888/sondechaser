@@ -335,14 +335,11 @@ public class DataCollector implements Runnable {
     public void onResume() {
         locationProvider.startLocationProvider(null);
         elapi.pause = false;
-        if (elapi_thread != null)
-            elapi_thread.interrupt();
+        refresh();
     }
 
     public void onPause() {
         elapi.pause = true;
-        if (elapi_thread != null)
-            elapi_thread.interrupt();
         locationProvider.stopLocationProvider();
     }
 

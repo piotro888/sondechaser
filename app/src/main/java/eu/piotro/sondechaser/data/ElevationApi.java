@@ -28,6 +28,7 @@ public class ElevationApi implements Runnable {
                         StringBuilder resp = new StringBuilder();
                         for (String line; (line = br.readLine()) != null; resp.append(line));
                         String data = resp.toString();
+
                         JSONObject json = new JSONObject(data);
                         alt = json.getJSONArray("elevation").getInt(0);
                         System.out.println("alt"+alt);
@@ -39,9 +40,11 @@ public class ElevationApi implements Runnable {
                 e.printStackTrace();
             }
             try {
-                while (!Thread.currentThread().isInterrupted())
+                do {
                     Thread.sleep(30000);
+                } while (pause);
             } catch (InterruptedException ignored) {}
+            boolean ignored = Thread.interrupted();
          }
     }
 }
