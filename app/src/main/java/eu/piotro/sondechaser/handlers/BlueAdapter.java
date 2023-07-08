@@ -63,6 +63,9 @@ public class BlueAdapter {
     public void setDeviceAddress(String menuEntry) {
         if (menuEntry.contains("("))
             deviceAddress = menuEntry.substring(menuEntry.lastIndexOf('(')+1, menuEntry.length()-1);
+
+        close();
+        device = null;
     }
     public void setFrequency(String freq) {
         freqString = freq.replace(',', '.');
@@ -175,6 +178,10 @@ public class BlueAdapter {
 
         @Override
         public void run() {
+            stop = false;
+            new_line = false;
+
+            System.out.println("BTHREAD: start ");
             while (!stop) {
                 System.out.println("BTHREAD: loop ");
                 String line = readLine(); // this fails in all cases (device offline, closed transmission error)
