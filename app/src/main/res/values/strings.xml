@@ -10,6 +10,7 @@
     <string name="menu_home">Map</string>
     <string name="menu_gallery">Settings</string>
     <string name="menu_slideshow">Compass</string>
+    <string name="menu_guide">Guide</string>
 
     <string-array name="tareget_sel">
         <item>POSITION LOCAL</item>

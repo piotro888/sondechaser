@@ -1,5 +1,9 @@
 package eu.piotro.sondechaser.ui.home;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,6 +102,20 @@ public class HomeFragment extends Fragment {
             } catch (Exception ignored) {
             }
         });
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("eu.piotro.sondechaser.PSET", Context.MODE_PRIVATE);
+        boolean show_welcome = sharedPref.getBoolean("first_run", true);
+        if(show_welcome) {
+            getActivity().runOnUiThread(()-> {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Welcome!")
+                        .setMessage("Hi! Thanks for downloading my app.\nYou can find the app GUIDE in the side panel (expanded by ☰)\nHappy Hunting!")
+                        .setPositiveButton("Don't show again",
+                                (dialog, which) -> sharedPref.edit().putBoolean("first_run", false).apply()
+                        )
+                        .show();
+            });
+        }
         onResume();
     }
 

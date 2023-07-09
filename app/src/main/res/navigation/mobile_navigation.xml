@@ -22,4 +22,10 @@
         android:name="eu.piotro.sondechaser.ui.compass.CompassFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_compass" />
+
+    <fragment
+        android:id="@+id/nav_guide"
+        android:name="eu.piotro.sondechaser.ui.guide.GuideFragment"
+        android:label="@string/menu_guide"
+        tools:layout="@layout/fragment_guide" />
 </navigation>
