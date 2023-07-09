@@ -1,0 +1,29 @@
+VERSION 0.5
++ Add user manual
++ Add in-app changelog
++ Add AP0 interface address to settings
++ Fix issues on app switch
++ Fix Bluetooth device unable to connect after settings save
++ Fix Settings save hang up when connected to BT device (not sure if not introduced in the same version)
++ Fix MySondy GO parameters upload
++ Fix elevation API updates
++ Fix keep screen awake option
++ Refresh data automatically at resume
++ Add welcome screen
+
+VERSION 0.4
++ Fix local interpolation crashes
+
+VERSION 0.3
++ Fix dark mode icons
++ Add setting to keep screen awake
++ MySondy GO support
+
+VERSION 0.2
++ Add SondeHub as location source
++ Add Compass view
++ Add Radiosondy archive format parsing
++ Make UI more intuitive
+
+VERSION 0.1
++ INITIAL APP VERSION
