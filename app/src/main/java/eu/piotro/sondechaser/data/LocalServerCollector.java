@@ -29,6 +29,7 @@ public class LocalServerCollector implements Runnable {
     private int terrain_alt = 0;
 
     private volatile boolean stop = false;
+    private volatile boolean refresh_flag;
 
     public LocalServerCollector() {}
 
@@ -79,14 +80,18 @@ public class LocalServerCollector implements Runnable {
         prediction = new ArrayList<>();
         last_decoded = 0;
         status = Status.RED;
+        refresh_flag = false;
 
         while (!stop) {
+            refresh_flag = false;
             getData();
             generatePrediction();
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ignored) {}
+            if (!refresh_flag) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ignored) {}
+            }
             boolean ignored = Thread.interrupted();
         }
         System.out.println("lcexit");
@@ -223,5 +228,9 @@ public class LocalServerCollector implements Runnable {
     public void stop() {
         stop = true;
         disable();
+    }
+
+    public void refresh() {
+        refresh_flag = true;
     }
 }

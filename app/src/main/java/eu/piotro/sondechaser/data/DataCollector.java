@@ -323,14 +323,22 @@ public class DataCollector implements Runnable {
     }
 
     public void refresh() {
-        if(rs_col_thread != null)
+        if(rs_col_thread != null) {
+            rs_col.refresh();
             rs_col_thread.interrupt();
-        if(sh_col_thread != null)
+        }
+        if(sh_col_thread != null) {
+            sh_col.refresh();
             sh_col_thread.interrupt();
-        if(lc_col_thread != null)
+        }
+        if(lc_col_thread != null) {
+            lc_col.refresh();
             lc_col_thread.interrupt();
-        if(elapi_thread != null)
+        }
+        if(elapi_thread != null) {
+            elapi.refresh();
             elapi_thread.interrupt();
+        }
     }
 
     public void onResume() {

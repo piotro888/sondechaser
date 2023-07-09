@@ -14,11 +14,13 @@ public class ElevationApi implements Runnable {
     public int alt = 0;
 
     public volatile boolean pause = false;
+    public volatile boolean refresh = false;
 
     @Override
     public void run() {
         while (true) {
             try {
+                refresh = false;
                 URL url = new URL("https://api.open-meteo.com/v1/elevation?latitude=" + lat + "&longitude=" + lon);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 try {
@@ -40,11 +42,16 @@ public class ElevationApi implements Runnable {
                 e.printStackTrace();
             }
             try {
-                do {
-                    Thread.sleep(30000);
-                } while (pause);
+                if (!refresh) {
+                    do {
+                        Thread.sleep(30000);
+                    } while (pause);
+                }
             } catch (InterruptedException ignored) {}
             boolean ignored = Thread.interrupted();
          }
+    }
+    public void refresh() {
+        refresh = true;
     }
 }

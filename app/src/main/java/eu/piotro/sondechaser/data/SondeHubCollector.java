@@ -37,6 +37,7 @@ public class SondeHubCollector implements Runnable {
 
     private ArrayList<String> sonde_entries = null;
     private volatile boolean stop = false;
+    private volatile boolean refresh_flag;
 
 
     @Override
@@ -45,12 +46,17 @@ public class SondeHubCollector implements Runnable {
         pred_point = null;
         lastSonde = null;
         track = new ArrayList<>();
+        refresh_flag = false;
 
         while (!stop) {
+            refresh_flag = false;
             downloadPrediction();
-            try {
-                Thread.sleep(30000);
-            } catch (InterruptedException ignored) {}
+
+            if (!refresh_flag) {
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException ignored) {}
+            }
             boolean ignored = Thread.interrupted();
         }
     }
@@ -203,4 +209,7 @@ public class SondeHubCollector implements Runnable {
         updateThread.start();
     }
 
+    public void refresh() {
+        refresh_flag = true;
+    }
 }

@@ -42,7 +42,9 @@ public class RadiosondyCollector implements Runnable {
     public volatile long last_decoded;
 
     private ArrayList<String> sonde_entries = null;
-    private HashSet<String> sonde_notifications = new HashSet<>();
+    private final HashSet<String> sonde_notifications = new HashSet<>();
+
+    private volatile boolean refresh_flag;
 
 
     private String sondeName = null;
@@ -61,20 +63,30 @@ public class RadiosondyCollector implements Runnable {
         track = new ArrayList<>();
         prediction = new ArrayList<>();
         pred_point = null;
-
+        refresh_flag = false;
 
         int i = 0;
         while (!stop) {
+            if(refresh_flag)
+                i = 0;
+            refresh_flag = false;
+
             if (!archive)
                 downloadFlyingMapData();
+
             if ((i++)%3 == 0) {
                 downloadPrediction();
                 if (archive)
                     downloadArchive();
             }
-            try {
-                Thread.sleep(15000);
-            } catch (InterruptedException ignored) {}
+
+            if (!refresh_flag) { // interrupt can be 'consumed' at http requests, don't sleep on refresh in that case
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException ignored) {
+                }
+            }
+
             boolean ignored = Thread.interrupted();
         }
     }
@@ -366,5 +378,9 @@ public class RadiosondyCollector implements Runnable {
             } catch (Exception ignored) {}
         });
         updateThread.start();
+    }
+
+    public void refresh() {
+        refresh_flag = true;
     }
 }
