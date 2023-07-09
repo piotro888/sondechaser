@@ -18,6 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
+
 import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
 import eu.piotro.sondechaser.handlers.BlueAdapter;
@@ -81,7 +86,7 @@ public class SettingsFragment extends Fragment {
             ((MainActivity)getActivity()).dataCollector.initCollectors();
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
 
-            if(((CheckBox)v.findViewById(R.id.set_awake)).isChecked())
+            if(((CheckBox)v.findViewById(R.id.set_awake)).isChecked()) // todo: move to data collector
                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             else
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -141,6 +146,8 @@ public class SettingsFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
         showSelSettings(v);
+
+        getIPAddress(v.findViewById(R.id.ap0ip));
     }
 
     private void showSelSettings(View v) {
@@ -152,6 +159,7 @@ public class SettingsFragment extends Fragment {
 
         v.findViewById(R.id.tfip).setVisibility(pv);
         v.findViewById(R.id.textView4).setVisibility(pv);
+        v.findViewById(R.id.ap0ip).setVisibility(pv);
 
         v.findViewById(R.id.bt_probe).setVisibility(bv);
         v.findViewById(R.id.sonde_addr).setVisibility(bv);
@@ -161,6 +169,46 @@ public class SettingsFragment extends Fragment {
         v.findViewById(R.id.textView19).setVisibility(bv);
         v.findViewById(R.id.searchbt).setVisibility(bv);
     }
+
+    public void getIPAddress(TextView v) {
+        StringBuilder ap0_ip = new StringBuilder();
+        StringBuilder wlan_ip = new StringBuilder();
+
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+
+                if (!(intf.toString().startsWith("name:wlan0") || intf.toString().startsWith("name:ap0")))
+                    continue;
+
+
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String saddr = addr.getHostAddress();
+
+                        if(saddr.startsWith("fe80::")) // skip link-local ig
+                            continue;
+
+                        if(intf.toString().startsWith("name:ap0")) {
+                            ap0_ip.append(saddr).append(" ");
+                        } else {
+                            wlan_ip.append(saddr).append(" ");
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception ignored) { }
+
+        if(ap0_ip.length() == 0)
+            ap0_ip.append("N/A");
+        if(wlan_ip.length() == 0)
+            wlan_ip.append("N/A");
+
+        v.setText("Phone IP addresses:\nap0: " + ap0_ip + "\nwlan0: "+wlan_ip);
+    }
+
 
     @Override
     public void onResume() {

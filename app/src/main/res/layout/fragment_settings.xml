@@ -207,4 +207,15 @@
         app:layout_constraintBottom_toTopOf="@+id/bt_probe"
         app:layout_constraintStart_toStartOf="@+id/sonde_addr" />
 
+    <TextView
+        android:id="@+id/ap0ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ap0: 0.0.0.0"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/set_awake"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfip" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
