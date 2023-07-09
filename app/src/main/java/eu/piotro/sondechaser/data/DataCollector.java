@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
+import android.view.WindowManager;
+import android.widget.CheckBox;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -13,6 +15,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import java.util.Date;
 import java.util.Objects;
 
+import eu.piotro.sondechaser.R;
 import eu.piotro.sondechaser.data.structs.Point;
 import eu.piotro.sondechaser.data.structs.Sonde;
 import eu.piotro.sondechaser.handlers.BlueAdapter;
@@ -159,6 +162,11 @@ public class DataCollector implements Runnable {
             lc_col_thread.start();
             showSondeSet = false;
         }
+
+        if(sharedPref.getBoolean("awake", false))
+            rootActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else
+            rootActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
     void update() {
         // Sonde marker and Position data

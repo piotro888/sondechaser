@@ -85,11 +85,6 @@ public class SettingsFragment extends Fragment {
             editor.apply();
             ((MainActivity)getActivity()).dataCollector.initCollectors();
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
-
-            if(((CheckBox)v.findViewById(R.id.set_awake)).isChecked()) // todo: move to data collector
-                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            else
-                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
 
         v.findViewById(R.id.searchrs).setOnClickListener((view) -> {
