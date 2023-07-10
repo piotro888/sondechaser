@@ -64,6 +64,9 @@ public class SettingsFragment extends Fragment {
 
         ((Spinner)v.findViewById(R.id.local_spinner)).setSelection(sharedPref.getInt("local_src", 0));
 
+        binding.setallText.setVisibility((sharedPref.getInt("local_src", 0) == 0) && (sharedPref.getString("rsid", "").equals("") || sharedPref.getString("shid", "").equals("")) ? View.VISIBLE : View.GONE);
+
+
         PopupMenu rsPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfrs));
         PopupMenu shPopupMenu = new PopupMenu(context, v.findViewById(R.id.tfsh));
         PopupMenu btPopupMenu = new PopupMenu(context, v.findViewById(R.id.sonde_addr));
@@ -137,6 +140,8 @@ public class SettingsFragment extends Fragment {
         ((Spinner)v.findViewById(R.id.local_spinner)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 showSelSettings(v);
+                if(position != 0)
+                    binding.setallText.setVisibility(View.INVISIBLE);
             }
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
