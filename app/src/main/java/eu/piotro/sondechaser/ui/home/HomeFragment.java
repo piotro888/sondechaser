@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -23,6 +24,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
+import eu.piotro.sondechaser.BuildConfig;
 import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
 
@@ -52,6 +54,8 @@ public class HomeFragment extends Fragment {
         View v = view;
         mapView = v.findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
+        // from OSMDroid guidelines
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
 
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(v.getContext()), mapView);
         locationOverlay.enableMyLocation();
