@@ -89,6 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="TARGET"
+        android:textSize="14dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ctftcord"
         app:layout_constraintStart_toStartOf="@+id/imageView14" />
@@ -99,6 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="YOU"
+        android:textSize="14dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ctfycord"
         app:layout_constraintStart_toStartOf="@+id/imageView15" />
@@ -107,28 +109,29 @@
         android:id="@+id/ctftcord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:layout_marginBottom="16dp"
         android:text="51.123454 16.43245"
+        android:textSize="14dp"
         app:layout_constraintBottom_toTopOf="@+id/textView14"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/imageView14" />
 
     <TextView
         android:id="@+id/ctfycord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:layout_marginBottom="16dp"
-        android:text="51.123454 16.43245"
+        android:text="-55.55555( -55.55555("
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/ctftcord" />
 
     <TextView
         android:id="@+id/ctftalt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
+        android:layout_marginStart="180dp"
         android:text="120m"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/ctftcord"
         app:layout_constraintStart_toStartOf="@+id/ctftcord" />
 
@@ -136,8 +139,9 @@
         android:id="@+id/ctfyalt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
+        android:layout_marginStart="180dp"
         android:text="120m"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/ctfycord"
         app:layout_constraintStart_toStartOf="@+id/ctfycord" />
 
@@ -147,6 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:text="150 (NE)"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/ctfycord"
         app:layout_constraintStart_toStartOf="@+id/ctfyalt" />
 
@@ -156,6 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:text="10s"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@+id/ctftalt"
         app:layout_constraintStart_toStartOf="@+id/ctftalt" />
 
@@ -282,7 +288,9 @@
         android:layout_height="0dp"
         android:src="@drawable/distance"
         app:layout_constraintBottom_toBottomOf="@+id/ctftcord"
-        app:layout_constraintEnd_toStartOf="@+id/ctftcord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ctftcord"
         app:tint="@color/blackaware" />
 
@@ -291,7 +299,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="GPS"
+        android:text="COMPASS SENSOR"
+        android:textSize="14dp"
         app:layout_constraintBottom_toTopOf="@+id/ctftydir"
         app:layout_constraintStart_toStartOf="@+id/imageView10" />
 

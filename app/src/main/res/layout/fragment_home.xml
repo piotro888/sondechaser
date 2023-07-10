@@ -99,10 +99,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#7AFFFFFF"
-            android:text="Map ©OpenStreetMap contributors\nSondeChaser ©Piotr Węgrzyn\nData:\n©Michał Lewiński (radiosondy.info)\n©Rossen Georgiev (sondehub.org)\n©Open-Meteo.com"
+            android:text="Map ©OpenStreetMap contributors\nSondeChaser ©Piotr Węgrzyn\nData:\n©Michał Lewiński (radiosondy.info)\n©sondehub.org\n©Open-Meteo.com"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="9sp"
+            android:textSize="9dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -153,7 +153,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="ME2122B71 	"
-            android:textSize="12sp"
+            android:textSize="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -164,7 +164,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="402.801 MHz"
-            android:textSize="12sp"
+            android:textSize="12dp"
             app:layout_constraintStart_toEndOf="@+id/textsid"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -175,7 +175,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="10dp"
             android:text="28655 m"
-            android:textSize="24sp"
+            android:textSize="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textsid" />
 
@@ -185,7 +185,7 @@
             android:layout_height="27dp"
             android:layout_marginStart="40dp"
             android:text="28655 m"
-            android:textSize="18sp"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/textalt"
             app:layout_constraintStart_toEndOf="@+id/textvspeed"
             app:layout_constraintTop_toTopOf="@+id/textalt" />
@@ -195,6 +195,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-17.48 m/s"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/textalt"
             app:layout_constraintStart_toEndOf="@+id/imagevsarrow"
             app:layout_constraintTop_toTopOf="@+id/textalt"
@@ -206,6 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="20km"
+            android:textSize="14dp"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -215,7 +217,7 @@
             android:layout_height="14dp"
             android:layout_marginStart="6dp"
             android:text="150()"
-            android:textSize="13sp"
+            android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="@+id/textposdist"
             app:layout_constraintStart_toEndOf="@+id/textposdist"
             app:layout_constraintTop_toTopOf="@+id/textposdist" />
@@ -226,6 +228,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:text="150()"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
             app:layout_constraintStart_toEndOf="@+id/textpreddist"
             app:layout_constraintTop_toTopOf="@+id/textpreddist" />
@@ -235,7 +238,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="02:03:51"
-            android:textSize="24sp"
+            android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
             app:layout_constraintEnd_toStartOf="@+id/imageView8"
             app:layout_constraintHorizontal_bias="0.84"
@@ -248,6 +251,7 @@
             android:layout_height="21dp"
             android:layout_marginEnd="20dp"
             android:text="02:03:51"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textposdist"
             app:layout_constraintEnd_toStartOf="@+id/imageView9"
             app:layout_constraintTop_toTopOf="@+id/textposdist" />
@@ -259,7 +263,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="16dp"
             android:text="21 km"
-            android:textSize="24sp"
+            android:textSize="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -290,6 +294,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
             android:text="Position "
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textalt" />
 
@@ -298,6 +303,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(RADIOSONDY)"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView17"
             app:layout_constraintStart_toEndOf="@+id/textView17"
             app:layout_constraintTop_toTopOf="@+id/textView17" />
@@ -309,6 +315,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="5dp"
             android:text="Prediction"
+            android:textSize="14dp"
             app:layout_constraintBottom_toTopOf="@+id/textpreddist"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -317,6 +324,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(SONDEHUB)"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView18"
             app:layout_constraintStart_toEndOf="@+id/textView18"
             app:layout_constraintTop_toTopOf="@+id/textView18" />
@@ -369,6 +377,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="2s"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textposdist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textposdist" />
@@ -379,6 +388,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="10s"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textpreddist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textpreddist" />
@@ -410,6 +420,7 @@
             android:layout_marginEnd="5dp"
             android:text="S"
             android:textColor="#E91E63"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textfreq"
             app:layout_constraintEnd_toStartOf="@+id/textstatr" />
 
@@ -420,6 +431,7 @@
             android:layout_marginEnd="5dp"
             android:text="R"
             android:textColor="#E91E63"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textstats"
             app:layout_constraintEnd_toStartOf="@+id/textstatl"
             app:layout_constraintTop_toTopOf="@+id/textstats" />
@@ -431,6 +443,7 @@
             android:layout_marginEnd="20dp"
             android:text="L"
             android:textColor="#E91E63"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/textstatr"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textstatr" />
@@ -438,7 +451,7 @@
         <ImageView
             android:id="@+id/imagevsarrow"
             android:layout_width="22dp"
-            android:layout_height="20dp"
+            android:layout_height="0dp"
             android:src="@drawable/arrow_out"
             app:layout_constraintBottom_toBottomOf="@+id/textvspeed"
             app:layout_constraintStart_toEndOf="@+id/textalt"
