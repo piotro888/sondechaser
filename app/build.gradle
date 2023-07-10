@@ -28,8 +28,23 @@ android {
             debuggable true
             applicationIdSuffix ".debug"
             buildConfigField("String", "VERSION_SUFF", "\"[beta-DEBUG]\"")
+
         }
     }
+
+    flavorDimensions "channel"
+    productFlavors {
+        dist {
+            dimension "channel"
+            buildConfigField("boolean", "GPLAY", "false")
+        }
+        gplay {
+            dimension "channel"
+            buildConfigField("boolean", "GPLAY", "true")
+            applicationIdSuffix ".paid"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

@@ -31,5 +31,30 @@
         android:id="@+id/nav_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:text="@string/nav_header_subtitle"
+        android:textSize="12dp" />
+
+    <FrameLayout
+        android:id="@+id/nav_badge"
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:layout_marginTop="5px"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/badge_bg" />
+
+        <TextView
+            android:id="@+id/nav_badge_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="❤️Google Play version. Thanks for support!"
+            android:textSize="12dp" />
+    </FrameLayout>
+
 </LinearLayout>
