@@ -25,3 +25,6 @@
     public static *** out.println(...);
     public static *** err.println(...);
 }
+
+-keepattributes LineNumberTable,SourceFile
+-renamesourcefileattribute SourceFile

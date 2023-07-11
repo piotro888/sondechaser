@@ -1,3 +1,8 @@
+VERSION 0.6
++ Fix UI on big font sizes
++ Add support badge
++ First GPLAY testing release
+
 VERSION 0.5
 + Add user manual
 + Add in-app changelog
