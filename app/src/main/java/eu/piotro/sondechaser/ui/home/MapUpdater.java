@@ -139,16 +139,18 @@ public class MapUpdater {
         homeFragment.requireActivity().runOnUiThread(()->view.findViewById(R.id.tvwait).setVisibility(View.GONE));
         if (sonde == null) {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                        ((TextView) view.findViewById(R.id.textsid)).setText("N/A");
-                        ((TextView) view.findViewById(R.id.textfreq)).setText("N/A");
-                        ((TextView) view.findViewById(R.id.textalt)).setText("NO DATA");
-                        ((TextView) view.findViewById(R.id.textaog)).setText("N/A m");
-                        ((TextView) view.findViewById(R.id.textvspeed)).setText("N/A m/s");
-                        ((TextView) view.findViewById(R.id.textposage)).setText("N/A s");
-                        ((TextView) view.findViewById(R.id.textposdist)).setText("N/A km");
-                        ((TextView) view.findViewById(R.id.textposhdg)).setText("N/A");
-                        ((TextView) view.findViewById(R.id.textpossrc)).setText("N/A");
-                         sondeMarker.setVisible(false);
+                try {
+                    ((TextView) view.findViewById(R.id.textsid)).setText("N/A");
+                    ((TextView) view.findViewById(R.id.textfreq)).setText("N/A");
+                    ((TextView) view.findViewById(R.id.textalt)).setText("NO DATA");
+                    ((TextView) view.findViewById(R.id.textaog)).setText("N/A m");
+                    ((TextView) view.findViewById(R.id.textvspeed)).setText("N/A m/s");
+                    ((TextView) view.findViewById(R.id.textposage)).setText("N/A s");
+                    ((TextView) view.findViewById(R.id.textposdist)).setText("N/A km");
+                    ((TextView) view.findViewById(R.id.textposhdg)).setText("N/A");
+                    ((TextView) view.findViewById(R.id.textpossrc)).setText("N/A");
+                    sondeMarker.setVisible(false);
+                } catch (Exception ignored) {}
             });
             return;
         }
@@ -331,9 +333,11 @@ public class MapUpdater {
     public void updateStatus(int rs_color, int sh_color, int lc_color) {
         try {
             homeFragment.requireActivity().runOnUiThread(() -> {
+                try {
                 ((TextView) view.findViewById(R.id.textstatl)).setTextColor(lc_color);
                 ((TextView) view.findViewById(R.id.textstats)).setTextColor(sh_color);
                 ((TextView) view.findViewById(R.id.textstatr)).setTextColor(rs_color);
+                } catch (Exception ignored) {}
             });
         }catch (Exception ignored){}
     }
@@ -341,9 +345,10 @@ public class MapUpdater {
     public void updateSondeSet(boolean vis) {
         try {
             homeFragment.requireActivity().runOnUiThread(() -> {
-                    homeFragment.getView().findViewById(R.id.tvsondeset).setVisibility(vis ? View.VISIBLE : View.GONE);
+                try {
+                    homeFragment.requireView().findViewById(R.id.tvsondeset).setVisibility(vis ? View.VISIBLE : View.GONE);
+                } catch (Exception ignored) {}
             });
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 }

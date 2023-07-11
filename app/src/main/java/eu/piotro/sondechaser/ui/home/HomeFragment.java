@@ -24,6 +24,8 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
+import java.util.Objects;
+
 import eu.piotro.sondechaser.BuildConfig;
 import eu.piotro.sondechaser.MainActivity;
 import eu.piotro.sondechaser.R;
@@ -71,8 +73,8 @@ public class HomeFragment extends Fragment {
                     mapView.getController().setZoom(11.0);
                     boolean set = false;
                     try {
-                        if (((MainActivity) getActivity()).dataCollector.locationProvider.getLastKnownLocation() != null) {
-                            mapView.getController().setCenter(new GeoPoint(((MainActivity) getActivity()).dataCollector.locationProvider.getLastKnownLocation()));
+                        if (((MainActivity) requireActivity()).dataCollector.locationProvider.getLastKnownLocation() != null) {
+                            mapView.getController().setCenter(new GeoPoint(((MainActivity) requireActivity()).dataCollector.locationProvider.getLastKnownLocation()));
                             set = true;
                         }
                     } catch (Exception ignored) {}
@@ -99,18 +101,18 @@ public class HomeFragment extends Fragment {
         v.findViewById(R.id.predbtn).setOnClickListener((_v) -> {
             mapView.getController().animateTo(updater.last_pred);
         });
+        while (getActivity() == null) {}
         v.findViewById(R.id.refrbtn).setOnClickListener((_v) -> {
             try {
-                while (getActivity() == null) {}
                 ((MainActivity) getActivity()).dataCollector.refresh();
             } catch (Exception ignored) {
             }
         });
 
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("eu.piotro.sondechaser.PSET", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("eu.piotro.sondechaser.PSET", Context.MODE_PRIVATE);
         boolean show_welcome = sharedPref.getBoolean("first_run", true);
         if(show_welcome) {
-            getActivity().runOnUiThread(()-> {
+            requireActivity().runOnUiThread(()-> {
                 new AlertDialog.Builder(getContext())
                         .setTitle("Welcome!")
                         .setMessage("Hi! Thanks for downloading my app.\nYou can find the app GUIDE in the side panel (expanded by ☰)\nHappy Hunting!")
@@ -125,7 +127,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onPause() {
-        ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(null);
+        try { ((MainActivity) this.requireActivity()).dataCollector.setMapUpdater(null); } catch (Exception e) {e.printStackTrace();}
         if (mapView != null)
             mapView.onPause();
         if (view != null)
@@ -139,7 +141,7 @@ public class HomeFragment extends Fragment {
             view.findViewById(R.id.tvwait).setVisibility(View.VISIBLE);
         if (mapView != null)
             mapView.onResume();
-        ((MainActivity)this.getActivity()).dataCollector.setMapUpdater(updater);
+        try { ((MainActivity)this.requireActivity()).dataCollector.setMapUpdater(updater); } catch (Exception e) {e.printStackTrace();}
         super.onResume();
     }
 }
