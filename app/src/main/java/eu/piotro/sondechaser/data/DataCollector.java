@@ -136,7 +136,9 @@ public class DataCollector implements Runnable {
             lc_col.disable();
         else if(src_sel == 1)
             lc_col.setPipeSource(sharedPref.getString("lsip",""));
-        else if (src_sel == 2) {
+        else if(src_sel == 2)
+            lc_col.setRdzSource(sharedPref.getString("rdzip", ""));
+        else if (src_sel == 3) {
             blueAdapter.setDeviceAddress(sharedPref.getString("bt_addr", "nodev (98:F4:AB:6D:2B:5E)"));
             blueAdapter.setType(sharedPref.getString("bt_model", "1: RS41"));
             blueAdapter.setFrequency(sharedPref.getString("bt_freq", "403.000"));

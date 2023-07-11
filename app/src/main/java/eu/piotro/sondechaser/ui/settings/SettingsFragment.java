@@ -64,6 +64,8 @@ public class SettingsFragment extends Fragment {
 
         ((Spinner)v.findViewById(R.id.local_spinner)).setSelection(sharedPref.getInt("local_src", 0));
 
+        ((TextView)v.findViewById(R.id.rdzip)).setText(sharedPref.getString("rdzip", ""));
+
         binding.setallText.setVisibility((sharedPref.getInt("local_src", 0) == 0) && (sharedPref.getString("rsid", "").equals("") || sharedPref.getString("shid", "").equals("")) ? View.VISIBLE : View.GONE);
 
 
@@ -82,6 +84,8 @@ public class SettingsFragment extends Fragment {
             editor.putString("bt_addr", ((TextView)v.findViewById(R.id.sonde_addr)).getText().toString());
             editor.putString("bt_model", ((Spinner)v.findViewById(R.id.bt_probe)).getSelectedItem().toString());
             editor.putString("bt_freq", ((TextView)v.findViewById(R.id.sonde_freq)).getText().toString());
+
+            editor.putString("rdzip", ((TextView)v.findViewById(R.id.rdzip)).getText().toString());
 
             editor.putInt("local_src", ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItemPosition());
 
@@ -153,13 +157,15 @@ public class SettingsFragment extends Fragment {
     private void showSelSettings(View v) {
         boolean pipe = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("PIPE");
         boolean bt = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("MYS");
+        boolean rt = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("RDZ");
 
         int pv = (pipe ? View.VISIBLE : View.GONE);
         int bv = (bt ? View.VISIBLE : View.GONE);
+        int rv = (rt ? View.VISIBLE : View.GONE);
 
         v.findViewById(R.id.tfip).setVisibility(pv);
         v.findViewById(R.id.textView4).setVisibility(pv);
-        v.findViewById(R.id.ap0ip).setVisibility(pv);
+        v.findViewById(R.id.ap0ip).setVisibility((pipe || rt) ? View.VISIBLE : View.GONE);
 
         v.findViewById(R.id.bt_probe).setVisibility(bv);
         v.findViewById(R.id.sonde_addr).setVisibility(bv);
@@ -168,6 +174,9 @@ public class SettingsFragment extends Fragment {
         v.findViewById(R.id.textView16).setVisibility(bv);
         v.findViewById(R.id.textView19).setVisibility(bv);
         v.findViewById(R.id.searchbt).setVisibility(bv);
+
+        v.findViewById(R.id.textView13).setVisibility(rv);
+        v.findViewById(R.id.rdzip).setVisibility(rv);
     }
 
     public void getIPAddress(TextView v) {

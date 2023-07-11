@@ -35,6 +35,20 @@
         app:layout_constraintTop_toBottomOf="@+id/local_spinner" />
 
     <EditText
+        android:id="@+id/rdzip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:ems="10"
+        android:hint="192.168.164.175"
+        android:inputType="text"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/local_spinner" />
+
+    <EditText
         android:id="@+id/tfsh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,6 +85,15 @@
         android:text="Local Server IP:PORT"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/tfip"
+        app:layout_constraintStart_toStartOf="@+id/tfsh" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="rdz_ttgo IP address"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rdzip"
         app:layout_constraintStart_toStartOf="@+id/tfsh" />
 
     <TextView
@@ -216,7 +239,8 @@
         app:layout_constraintBottom_toTopOf="@+id/set_awake"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfip" />
+        app:layout_constraintTop_toBottomOf="@+id/local_spinner"
+        app:layout_constraintVertical_bias="0.65" />
 
     <TextView
         android:id="@+id/setall_text"

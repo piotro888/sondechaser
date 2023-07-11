@@ -24,6 +24,7 @@
     <string-array name="local_set">
         <item>NONE</item>
         <item>PIPE SERVER (IP)</item>
+        <item>RDZ_TTGO (IP)</item>
         <item>MYSONDY (BLUETOOTH)</item>
     </string-array>
 

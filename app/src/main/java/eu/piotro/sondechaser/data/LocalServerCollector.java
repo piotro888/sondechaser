@@ -8,6 +8,7 @@ import java.util.Date;
 import eu.piotro.sondechaser.data.local.LocalServerDownloader;
 import eu.piotro.sondechaser.data.local.MySondyDownloader;
 import eu.piotro.sondechaser.data.local.PipeServerDownloader;
+import eu.piotro.sondechaser.data.local.RdzTtgoDownloader;
 import eu.piotro.sondechaser.data.structs.Point;
 import eu.piotro.sondechaser.data.structs.Sonde;
 import eu.piotro.sondechaser.handlers.BlueAdapter;
@@ -36,6 +37,7 @@ public class LocalServerCollector implements Runnable {
     private enum Mode {
         NONE,
         PIPE,
+        RDZ,
         MYSONDY,
     }
 
@@ -47,26 +49,30 @@ public class LocalServerCollector implements Runnable {
 
     private Mode source;
 
-    private PipeServerDownloader pipeDownloader;
-    private MySondyDownloader mySondyDownloader;
+    private LocalServerDownloader mDownloader;
 
     public void disable() {
-        // pipe downloader does not need disabling
-        if (mySondyDownloader != null)
-            mySondyDownloader.disable();
-
+        if(mDownloader != null)
+            mDownloader.disable();
         source = Mode.NONE;
     }
     public void setPipeSource(String ip) {
         disable();
-        pipeDownloader = new PipeServerDownloader(ip);
+        mDownloader = new PipeServerDownloader(ip);
         source = Mode.PIPE;
     }
 
+    public void setRdzSource(String ip) {
+        disable();
+        mDownloader = new RdzTtgoDownloader(ip);
+        source = Mode.RDZ;
+    }
+
+
     public void setMySondySource(BlueAdapter blueAdapter) {
         disable();
-        mySondyDownloader = new MySondyDownloader(blueAdapter);
-        mySondyDownloader.enable();
+        mDownloader = new MySondyDownloader(blueAdapter);
+        mDownloader.enable();
         source = Mode.MYSONDY;
     }
 
@@ -98,17 +104,20 @@ public class LocalServerCollector implements Runnable {
     }
 
     private void getData() {
-        if (source == Mode.NONE) {
+        if (source == Mode.NONE || mDownloader == null) {
             status = Status.RED;
             return;
         }
 
-        LocalServerDownloader downloader = (source == Mode.PIPE ? pipeDownloader : mySondyDownloader);
-        downloader.download();
+        mDownloader.download();
 
-        Sonde last_sonde = downloader.getLastSonde();
+        Sonde last_sonde = mDownloader.getLastSonde();
+
         Point sonde_point = new Point();
         if (last_sonde != null) {
+            if (last_sonde.time > new Date().getTime())
+                last_sonde.time = new Date().getTime(); // sonde clocks tend to shift in time, correct for that
+
             sonde_point.point = last_sonde.loc;
             sonde_point.time = last_sonde.time;
             sonde_point.alt = last_sonde.alt;
@@ -116,7 +125,7 @@ public class LocalServerCollector implements Runnable {
         }
 
         synchronized (dataLock) {
-            status = downloader.getStatus();
+            status = mDownloader.getStatus();
 
             if (last_sonde != null && sonde_point != null) {
                 if (lastSonde == null || last_sonde.loc.getLongitude() != lastSonde.loc.getLongitude() || last_sonde.loc.getLatitude() != lastSonde.loc.getLatitude()) {
@@ -126,7 +135,7 @@ public class LocalServerCollector implements Runnable {
                 }
 
                 lastSonde = last_sonde;
-                last_decoded = downloader.getLastDecoded();
+                last_decoded = mDownloader.getLastDecoded();
             }
         }
     }
