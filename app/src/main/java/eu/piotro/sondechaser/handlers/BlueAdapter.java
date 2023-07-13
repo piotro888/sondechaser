@@ -87,10 +87,12 @@ public class BlueAdapter {
         if(deviceAddress == null)
             return false;
 
-        BluetoothDevice device = this.bluetoothAdapter.getRemoteDevice(deviceAddress);
-
-        if(device == null)
-            return false;
+        BluetoothDevice device;
+        try {
+             device = this.bluetoothAdapter.getRemoteDevice(deviceAddress);
+        } catch (Exception e) {
+                return false;
+        }
 
         try {
             bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(WELL_KNOWN_SERIAL_UUID);
