@@ -230,8 +230,8 @@ public class RadiosondyCollector implements Runnable {
 
                 JSONObject curr = feat.getJSONObject(3);
                 Sonde sonde = new Sonde();
-                float lat = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
                 float lon = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1);
+                float lat = (float)curr.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
                 sonde.loc = new GeoPoint(lat, lon);
 
                 sonde.alt = curr.getJSONObject("geometry").getJSONArray("coordinates").getInt(2);
