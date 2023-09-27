@@ -20,15 +20,15 @@
         R - Radiosondy source.
         L - Local source.
         </p>
-        Letters can be <span style="color: green;">green</span>, <span style="color: orange;">yellow</span>  or <span style="color: red;">red</span> 
-        For letters <b>S</b> and <b>R</b>, <span style="color: green;">green</span> color represents working connection and that data is succesfully downloaded.<br>
-        <span style="color: red;">Red</span> means failure in download or correctness of data.
+        Letters can be <span style="color: green;">green</span>, <span style="color: orange;">yellow</span>  or <span style="color: red;">red</span><br><br>
+        For letters <b>S</b> and <b>R</b>, <span style="color: green;">green</span> color represents working connection and that data is successfully downloaded.<br>
+        <span style="color: red;">Red</span> means failure in download or correctness of data. <br>
         For Local source <b>L</b> there are three possible statuses:
         <ul>
             <li><span style="color: red;">Red</span> - could not connect to device (or local source is disabled)</li>
             <li><span style="color: orange;">Yellow</span> - connected to device, but device doesn't receive data from Sonde.</li>
             <li><span style="color: green;">Green</span> - device is connected and actively receiving data from Sonde.</li>
-        </ul> 
+        </ul>
     </p>
     <h3>1.2 Current position data</h3>
     <img src="pos.png" /><br>
@@ -36,8 +36,8 @@
         1. <b>Altitude over sea level</b><br>
         2. <b>Vertical speed</b> - can be positive(up) or negative(down). If not known (r:) with predicted rate is displayed<br>
         3. <b>Height over ground</b><br>
-        4. <b>Data source</b> - which source provides data to this section. Best source is selected automatically (the newest postion)<br>
-        5. <b>Distance and bearing</b> to current sonde postion.<br>
+        4. <b>Data source</b> - which source provides data to this section. Best source is selected automatically (the newest position)<br>
+        5. <b>Distance and bearing</b> to current sonde position.<br>
         6. <b>Time elapsed from start</b><br>
         7. <b>Data age</b> - how old is the displayed position
     </p>
@@ -60,11 +60,11 @@
     <p>
         All of the pins and tracks displayed on the map are <span style="color: magenta;">C<span style="color: blue;">O<span style="color: green;">L<span style="color: orange;">O<span style="color: red;">R</span></span></span></span></span> CODED.
         <ul>
-            <li><span style="color: cyan;">CYAN</span> color refeers to RADIOSONDY DATA</li>
-            <li><span style="color: magenta;">MAGENTA</span> color refeers to SONDEHUB DATA</li>
-            <li><span style="color: red;">RED</span> color refeers to data from your LOCAL SEVER</li>
+            <li><span style="color: cyan;">CYAN</span> color refers to RADIOSONDY DATA</li>
+            <li><span style="color: magenta;">MAGENTA</span> color refers to SONDEHUB DATA</li>
+            <li><span style="color: red;">RED</span> color refers to data from your LOCAL SERVER</li>
         </ul>
-        This applies to all sections explained below, with different color, they represetn the same data but from other source.<br>
+        This applies to all sections explained below, with different color, they represent the same data but from other source.<br>
         All markers are clickable for more details.<br>
         <p>
             Example map view:<br>
@@ -77,25 +77,25 @@
         </p>
         <h3>2.2 Sonde position</h3>
         <p>
-            <img src="baloon.png" width="40px"/> Sonde marker displays the current Sonde postion if it was received recently.<br>
-            <img src="lastmark.png" width="40px"/> Last known postion marker is displayed separetly for each source, if sonde postion wasn't updated recently (ex. >60s). Each marker represent last known postion from given source if position is no longer updated from it.<br>
+            <img src="baloon.png" width="40px"/> Sonde marker displays the current Sonde position if it was received recently.<br>
+            <img src="lastmark.png" width="40px"/> Last known position marker is displayed separately for each source, if sonde position wasn't updated recently (ex. >60s). Each marker represent last known position from given source if position is no longer updated from it.<br>
         </p>
         <h3>2.3 Sonde prediction</h3>
         <p>
             <img src="predmark.png" width="40px"/> This is a prediction marker. It displays landing position prediction for given source<br>
             Predicted Sonde path is displayed by thin line on map. <br>
-            Note that, predictions from RADIOSONDY are static and updated only at start of Sone and after landing. <br>
+            Note that, predictions from RADIOSONDY are static and updated only at start of Sonde and after landing. <br>
             SONDEHUB provides dynamic predictions (that are update live, from current sonde position). <br>
-            LOCAL source prediction is only a very simple interpolation of movement and descent rates and is meant to be used only for the last stage of flight (but it should be trusted too much either).
+            LOCAL source prediction is only a very simple interpolation of movement and descent rates and is meant to be used only for the last stage of flight (but it shouldn't be trusted too much either).
         </p>
         <h3>2.4 Navigation buttons</h3>
         <p>
             <img src="nvbtn.png" width="90px"/><br>
             <p>
-                1. <b>Force update data</b> - causes data to be downloaded now. You shouldn't use this button in normal cases, beacause the data is automatically refreshed at reasonable rates (that are both prefectly usable and don't overload the APIs)<br>
+                1. <b>Force update data</b> - causes data to be downloaded now. You shouldn't use this button in normal cases, because the data is automatically refreshed at reasonable rates (that are both perfectly usable and don't overload the APIs)<br>
                 2. <b>Center at prediction</b> - centers map on prediction point.<br>
                 3. <b>Center on sonde</b> - centers map on Sonde position<br>
-                4. <b>Cener on GPS</b> - centers map on yout location<br>
+                4. <b>Center on GPS</b> - centers map on your location<br>
                 5. <b>Rotate north</b> - Resets orientation of map to north at top.
             </p>
         </p>
@@ -106,13 +106,13 @@
     <p>
         Enter Sonde number you want to track.<br>
         Note that sonde numbers for RADIOSONDY and SONDEHUB may be the same or different.<br>
-        Field may be left empty to disable sssociated source.<br>
+        Field may be left empty to disable associated source.<br>
         <p>
             Example: V2420380 uses the same number for both sources. 
             However ME9B00595 is valid for RADIOSONDY, but 204-2-00595 describes the same sonde for SONDEHUB.<br>
             You can use looking glass button to list and select currently flying Sondes.<br>
             IDs of already landed sondes are valid and supported, but not displayed on this list for obvious reasons. Archive data would be fetched for them.<br>
-            RADIOSONDY list additionaly displays launch site name and if there are notifications sent (planned takings) for given Sonde. 
+            RADIOSONDY list additionally displays launch site name and if there are notifications sent (planned takings) for given Sonde.
         </p>
     </p>
     <h3>3.2 Local server source</h3>
@@ -127,7 +127,7 @@
     The most common use case for Pipe server is having external device (like Raspberry Pi) with some Sonde decoder that presents data over HTTP api and is connected to your hotspot.<br>
     <p>
         NOTE: Android hotspots are tricky and change the (192.168.xxx.yyy) xxx part of address randomly. It is not possible to set a static ip for android hotspot.
-        Thats way you will see your PHONE ap0 ip address (when active) to help you determine your target device IP. The yyy part of address (asigned by DHCP to device) usually doesn't change. Interface scanning apps may be also helpful.<br>
+        In settings view, you can see your PHONE ap0 IP address (when active) to help you determine your target device IP. The yyy part of address (assigned by DHCP to device) usually doesn't change. Interface scanning apps may be also helpful.<br>
     </p>
     <h3>3.2.1.1 PIPE SERVER DATA FORMAT</h3>
     Pipe server is expected to run a simple HTTP server on its main address (http://IP:PORT/) that presents its (only) <b>last</b> received Sonde packet in JSON format.<br>
@@ -148,44 +148,56 @@
             "time": 1688816444<br></span>
         }<br>
     </p>
-
-    <h3>3.2.2 MySondy TTGO Bluetooth</h3>
+    <h3>3.2.2 rdzTTGOsonde</h3>
     <p>
-        SondeChaser app supports downloading data from MySondy GO TTGO Bluetooth device. Select MYSONDY from <b>Locat Server Source</b> menu<br>
+        SondeChaser app supports downloading data from rdzTTGOsonde device. Select RDZ_TTGO from <b>Local Server Source</b> menu<br><br>
+        Connection via network HTTP API (<i>live.json endpoint</i>, the same that Android app uses) is supported. Only basic data about ONE Sonde status is used.<br><br>
+
+        To use your TTGO device you first need to setup its wireless connection and <b>configure it with its own web interface, to scan for desired Sonde frequencies. (see rdzTTGOsonde manual)</b><br>
+        SondeChaser will only display data that is also present in devices own view.<br><br>
+
+        Note that if you connect to TTGO WiFi network, you will have no internet access (no maps). You should be able to configure TTGO to connect to your phone Access Point.<br>
+        For finding IP address of TTGO board, tips from section <b>3.2.1 PIPE SERVER</b> might be helpful.
+        You can monitor connection status by <b>L</b> field in Data View (in Map screen, described in section <b>1.1</b>).<br><br>
+
+        Support for this device is currently <b>EXPERIMENTAL</b>, and may not work fully properly.
+    </p>
+    <h3>3.2.3 MySondy TTGO Bluetooth</h3>
+    <p>
+        SondeChaser app supports downloading data from MySondy GO TTGO Bluetooth device. Select MYSONDY from <b>Local Server Source</b> menu<br><br>
         To connect to TTGO board you <b>first</b> need to pair it with System Settings (not with app).<br><br>
         Then, with Bluetooth enabled, press looking glass icon next to <b>Select device address</b> field and select your device from list.<br>
-        Select corret <b>Sonde Type</b> from list and enter <b>Sonde Freqency</b> (ex. 403.000). This parameters will configure MySondy device at connection.<br>
+        Select correct <b>Sonde Type</b> from list and enter <b>Sonde Frequency</b> (ex. 403.000). This parameters will configure MySondy device at connection.<br>
 
-        <p>
-            You can monitor connection status by <b>L</b> field in Data View (in Map screen, described here in section <b>1.1</b>).<br>
-            App will automatically try to reconnect to device when disconnected, but you may try saving settigns again if something is not working.<br>
-            Support for this device is currently <b>EXPERIMENTAL</b>, and may not work properly.
-        </p>
+    <p>
+        You can monitor connection status by <b>L</b> field in Data View (in Map screen, described here in section <b>1.1</b>).<br>
+        App will automatically try to reconnect to device when disconnected, but you may try saving settings again if something is not working.<br>
+        Support for this device is currently <b>EXPERIMENTAL</b>, and may not work fully properly.
     </p>
-    <h3>3.2.3 Settings end</h3>
+    <h3>3.3 Settings end</h3>
     <p>
         <b>Keep screen awake</b> will prevent your screen from going to sleep when the app is running.<br>
         <!-- TODO: make app run in bg with notif - no main activity data -->
         <br>
-        Prees the <b>Save</b> button to save your changed settings!
+        Press the <b>Save</b> button to save your changed settings!
     </p>
     <h2>4. Compass view</h2>
     <p>
         Compass view can be entered by left side panel (opened by ☰).<br>
         Compass view may help you guide to the selected point.<br>
-        PREDITCION and POSTIONS points from all (LOCAL, RADIOSONDY, SONDEHUB) sources coudl be selected<br>
+        PREDICTION and POSITIONS points from all (LOCAL, RADIOSONDY, SONDEHUB) sources could be selected<br>
         Select your Point of Interest from upper menu (above compass).<br>
         <p>
             <b>Red cross</b> over compass means that the selected point is not available. Select other point or check your data sources.<br>
             <b>Green compass arrow</b> shows direction to the target point.<br>
             <b>Thin red arrow</b> shows North direction. <br>
-            <b>Dot</b> will appear on compass when you are close to target, and will show your distance in logarythmic scale.
+            <b>Dot</b> will appear on compass when you are close to target, and will show your distance in logarithmic scale.
         </p>
         Compass uses orientation sensor in your phone to get bearing. However, if you are moving over 5 km/h GPS movement direction would be used as bearing source instead. <br>
     </p>
     <h2>5. SondeChaser app</h2>
     <p>
-        SondeChaser is ❤ Open Source and provided under MIT Licesnse.<br>
+        SondeChaser is ❤ Open Source and provided under MIT License.<br>
         <p>© 2023 by Piotr Węgrzyn</p>
 
         You can find project sources and releases here: <a href="https://github.com/piotro888/sondechaser">github.com/piotro888/sondechaser</a><br>
@@ -203,8 +215,8 @@
             <li><a href="https://radiosondy.info">radiosondy.info</a> - Michał Lewiński SQ6KXY</li>
             <li><a href="https://sondehub.org">sondehub.org</a></li>
         </ul>
-        <b>Massive thanks for those services for maintaing and processing sonde data. This app would not be possible without those services.</b> <br>
-        Radio receiver network is run by many volouterrs. You can also contribute to it by setting up a receiver.<br>
+        <b>Massive thanks for those services for maintaining and processing sonde data. This app would not be possible without those services.</b> <br>
+        Radio receiver network is run by many volunteers. You can also contribute to it by setting up a receiver.<br>
         <br>
         Thanks for the open source map library <b>osmdroid</b>, and <b>OpenStreetMap</b> for providing great open source maps (© OpenStreetMap contributors)<br>
         <br>
