@@ -76,8 +76,8 @@ public class SettingsFragment extends Fragment {
 
         v.findViewById(R.id.savebtn).setOnClickListener((view) -> {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("rsid", ((TextView)v.findViewById(R.id.tfrs)).getText().toString());
-            editor.putString("shid", ((TextView)v.findViewById(R.id.tfsh)).getText().toString());
+            editor.putString("rsid", ((TextView)v.findViewById(R.id.tfrs)).getText().toString().toUpperCase());
+            editor.putString("shid", ((TextView)v.findViewById(R.id.tfsh)).getText().toString().toUpperCase());
             editor.putBoolean("awake", ((CheckBox)v.findViewById(R.id.set_awake)).isChecked());
 
             editor.putString("lsip", ((TextView)v.findViewById(R.id.tfip)).getText().toString());
