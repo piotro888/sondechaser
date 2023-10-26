@@ -1,3 +1,11 @@
+VERSION 0.8
++ Fix IP address field overflow
++ Fix crashes on invalid BT address
++ Fix invalid last position of archive source
++ Make sonde number case insensitive
++ Add README
++ Update and fix typos in guide
+
 VERSION 0.7
 + Add rdz_ttgo device support
 + Fix guide size
