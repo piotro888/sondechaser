@@ -232,15 +232,19 @@
 
     <TextView
         android:id="@+id/ap0ip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:fadeScrollbars="false"
+        android:gravity="center_vertical"
+        android:scrollbars="vertical"
         android:text="ap0: 0.0.0.0"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/set_awake"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/local_spinner"
-        app:layout_constraintVertical_bias="0.65" />
+        app:layout_constraintEnd_toEndOf="@+id/local_spinner"
+        app:layout_constraintStart_toStartOf="@+id/sonde_freq"
+        app:layout_constraintTop_toBottomOf="@+id/sonde_addr" />
 
     <TextView
         android:id="@+id/setall_text"

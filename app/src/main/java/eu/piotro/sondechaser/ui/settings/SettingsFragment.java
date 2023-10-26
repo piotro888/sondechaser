@@ -3,6 +3,7 @@ package eu.piotro.sondechaser.ui.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +95,8 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
         });
 
+        ((TextView) v.findViewById(R.id.ap0ip)).setMovementMethod(new ScrollingMovementMethod());
+
         v.findViewById(R.id.searchrs).setOnClickListener((view) -> {
             rsPopupMenu.getMenu().clear();
             rsPopupMenu.getMenu().add("Fetching...");
@@ -159,9 +162,9 @@ public class SettingsFragment extends Fragment {
         boolean bt = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("MYS");
         boolean rt = ((Spinner)v.findViewById(R.id.local_spinner)).getSelectedItem().toString().startsWith("RDZ");
 
-        int pv = (pipe ? View.VISIBLE : View.GONE);
-        int bv = (bt ? View.VISIBLE : View.GONE);
-        int rv = (rt ? View.VISIBLE : View.GONE);
+        int pv = (pipe ? View.VISIBLE : View.INVISIBLE);
+        int bv = (bt ? View.VISIBLE : View.INVISIBLE);
+        int rv = (rt ? View.VISIBLE : View.INVISIBLE);
 
         v.findViewById(R.id.tfip).setVisibility(pv);
         v.findViewById(R.id.textView4).setVisibility(pv);
@@ -200,9 +203,9 @@ public class SettingsFragment extends Fragment {
                             continue;
 
                         if(intf.toString().startsWith("name:ap0")) {
-                            ap0_ip.append(saddr).append(" ");
+                            ap0_ip.append(saddr).append("\n");
                         } else {
-                            wlan_ip.append(saddr).append(" ");
+                            wlan_ip.append(saddr).append("\n");
                         }
                     }
                 }
@@ -211,11 +214,11 @@ public class SettingsFragment extends Fragment {
         } catch (Exception ignored) { }
 
         if(ap0_ip.length() == 0)
-            ap0_ip.append("N/A");
+            ap0_ip.append("N/A\n");
         if(wlan_ip.length() == 0)
-            wlan_ip.append("N/A");
+            wlan_ip.append("N/A\n");
 
-        v.setText("Phone IP addresses:\nap0: " + ap0_ip + "\nwlan0: "+wlan_ip);
+        v.setText("Phone IP addresses:\nap0:\n" + ap0_ip + "wlan0:\n"+wlan_ip);
     }
 
 
